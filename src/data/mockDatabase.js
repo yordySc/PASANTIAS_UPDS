@@ -1,0 +1,68 @@
+export const mockOffers = [
+  {
+    id: 1,
+    institution: 'Clínica Santa Lucía',
+    address: 'Av. San Martín #120, Cochabamba',
+    careers: ['Ingeniería de Sistemas', 'Administración'],
+    vacancies: 4,
+    filled: 2,
+    visible: true,
+    type: 'Convenio institucional',
+    description: 'Se requiere apoyo en procesos internos y digitalización de historias clínicas.',
+    logo: '🩺',
+  },
+  {
+    id: 2,
+    institution: 'Radio Aclo',
+    address: 'Calle Bolívar #45, Cochabamba',
+    careers: ['Comunicación Social', 'Diseño Gráfico'],
+    vacancies: 3,
+    filled: 3,
+    visible: true,
+    type: 'Pasantía vigente',
+    description: 'Espacio ideal para estudiantes interesados en producción y gestión de contenidos.',
+    logo: '📻',
+  },
+  {
+    id: 3,
+    institution: 'Consejo de la Magistratura',
+    address: 'Zona Central, Cochabamba',
+    careers: ['Derecho', 'Ingeniería de Sistemas'],
+    vacancies: 2,
+    filled: 2,
+    visible: false,
+    type: 'Oferta cerrada',
+    description: 'Se gestionó un proceso de selección priorizando perfiles de derecho y tecnología.',
+    logo: '⚖️',
+  },
+  {
+    id: 4,
+    institution: 'Empresa de Telecomunicaciones',
+    address: 'Av. Heroínas #300, Cochabamba',
+    careers: ['Ingeniería de Sistemas', 'Comercial'],
+    vacancies: 5,
+    filled: 1,
+    visible: true,
+    type: 'Convenio universidad',
+    description: 'Oportunidad para fortalecer experiencia en soporte técnico y atención al cliente.',
+    logo: '📡',
+  },
+]
+
+export const mockDocuments = [
+  {
+    id: 1,
+    title: 'Formato de solicitud de práctica',
+    description: 'Documento base para iniciar el proceso.',
+  },
+  {
+    id: 2,
+    title: 'Planilla de evaluación del supervisor',
+    description: 'Herramienta para registrar seguimiento del desempeño.',
+  },
+  {
+    id: 3,
+    title: 'Convenio de prácticas profesionales',
+    description: 'Modelo para formalizar la relación con la institución.',
+  },
+]
