@@ -1,0 +1,113 @@
+@keyframes float {
+
+    0%{
+        transform:translateY(0px);
+    }
+
+    50%{
+        transform:translateY(-18px);
+    }
+
+    100%{
+        transform:translateY(0px);
+    }
+
+}
+
+.animate-float{
+
+    animation:float 6s ease-in-out infinite;
+
+}
+
+@keyframes pulseGlow{
+
+    0%{
+        box-shadow:0 0 0 rgba(59,130,246,.2);
+    }
+
+    50%{
+        box-shadow:
+        0 0 40px rgba(59,130,246,.45),
+        0 0 90px rgba(37,99,235,.25);
+    }
+
+    100%{
+        box-shadow:0 0 0 rgba(59,130,246,.2);
+    }
+
+}
+
+.animate-glow{
+
+    animation:pulseGlow 3s ease infinite;
+
+}
+
+@keyframes blob{
+
+    0%{
+        transform:translate(0px,0px) scale(1);
+    }
+
+    33%{
+        transform:translate(35px,-45px) scale(1.12);
+    }
+
+    66%{
+        transform:translate(-20px,30px) scale(.92);
+    }
+
+    100%{
+        transform:translate(0px,0px) scale(1);
+    }
+
+}
+
+.animate-blob{
+
+    animation:blob 12s infinite;
+
+}
+
+.animation-delay-2000{
+
+    animation-delay:2s;
+
+}
+
+.animation-delay-4000{
+
+    animation-delay:4s;
+
+}
+
+@keyframes shine{
+
+    from{
+
+        background-position:-200px;
+
+    }
+
+    to{
+
+        background-position:200px;
+
+    }
+
+}
+
+.animate-shine{
+
+    background-size:200%;
+
+    animation:shine 2s linear infinite;
+
+}
+
+html{
+
+    scroll-behavior:smooth;
+
+}
