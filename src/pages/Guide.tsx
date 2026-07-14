@@ -5,6 +5,7 @@ import Header from '../components/guide/Header'
 import AnimatedBackground from '../components/guide/AnimatedBackground'
 import Reveal from '../components/guide/Reveal'
 import logoUPDS from '../assets/logo-upds.png'
+import { Mail, Phone, MapPin } from 'lucide-react'
 import imagen2UPDS from '../assets/imagen2UPDS.jpg'
 import imagen1 from '../assets/imagen1UPDS.jpg'
 
@@ -119,7 +120,7 @@ function Guide() {
         {/* PASO 6.7 - Indicador para bajar */}
         <div className="absolute bottom-8 left-1/2 -z-0 -translate-x-1/2 flex flex-col items-center text-white">
           <p className="text-sm tracking-widest uppercase opacity-70">Desliza</p>
-          <div className="mt-2 animate-bounce text-3xl">↓</div>
+          <div className="mt-4 animate-bounce text-3xl">↓</div>
         </div>
       </section>
 
@@ -203,8 +204,44 @@ function Guide() {
         <Link to="/student" className="mt-10 inline-block rounded-2xl bg-white px-10 py-4 font-semibold text-[#223b87]">Ver empresas</Link>
       </section>
 
-      <footer className="border-t bg-white px-5 py-16 text-center text-sm text-slate-500">
-        © 2026 Universidad Privada Domingo Savio • Todos los derechos reservados.
+      <footer className="border-t bg-white px-5 py-12 text-slate-600">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid gap-8 md:grid-cols-3 items-start">
+            <div className="space-y-4">
+              <img src={logoUPDS} alt="UPDS" className="h-12 w-auto" />
+              <p className="text-sm text-slate-700">Universidad Privada Domingo Savio — Guía oficial de pasantías. Conectamos estudiantes con oportunidades reales para impulsar su desarrollo profesional.</p>
+              <div className="flex items-center gap-3 text-sm text-slate-600">
+                <MapPin size={16} /> <span>Av. Example 123, Cochabamba, Bolivia</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-slate-600">
+                <Phone size={16} /> <a href="tel:+59112345678" className="hover:underline">+591 123 45678</a>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-slate-600">
+                <Mail size={16} /> <a href="mailto:contacto@upds.edu.bo" className="hover:underline">contacto@upds.edu.bo</a>
+              </div>
+            </div>
+            <div>
+              <h4 className="mb-3 text-sm font-semibold text-slate-800">Enlaces rápidos</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="/student" className="hover:underline">Empresas</a></li>
+                <li><a href="/student/success-stories" className="hover:underline">Casos de éxito</a></li>
+                <li><a href="/guide" className="hover:underline">Guía</a></li>
+                <li><a href="/admin" className="hover:underline">Panel Admin</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="mb-3 text-sm font-semibold text-slate-800">Síguenos</h4>
+              <p className="text-sm text-slate-600 mb-3">Sigue a la UPDS en redes para mantenerte al día.</p>
+              <div className="flex items-center gap-3">
+                <a href="#" aria-label="Facebook UPDS" className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-700 hover:bg-slate-200">FB</a>
+                <a href="#" aria-label="Instagram UPDS" className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-700 hover:bg-slate-200">IG</a>
+                <a href="#" aria-label="LinkedIn UPDS" className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-700 hover:bg-slate-200">IN</a>
+                <a href="#" aria-label="YouTube UPDS" className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-700 hover:bg-slate-200">YT</a>
+              </div>
+            </div>
+          </div>
+          <div className="mt-8 border-t pt-6 text-center text-sm text-slate-500">© 2026 Universidad Privada Domingo Savio • Todos los derechos reservados.</div>
+        </div>
       </footer>
     </div>
   )

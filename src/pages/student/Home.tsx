@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Search, GraduationCap, Building2, Award, ChevronRight, AlertCircle, Zap, Info } from 'lucide-react'
@@ -6,6 +6,7 @@ import CompanyCard from '../../components/public/CompanyCard'
 import AnimatedBackground from '../../components/guide/AnimatedBackground'
 import Reveal from '../../components/guide/Reveal'
 import type { CompanyOffer } from '../../types'
+import { getCareers } from '../../services/internships'
 
 interface HomeProps {
   offers: CompanyOffer[]
@@ -14,11 +15,26 @@ interface HomeProps {
 function Home({ offers }: HomeProps) {
   const [selectedCareer, setSelectedCareer] = useState<string>('Todas')
   const [searchTerm, setSearchTerm] = useState<string>('')
-  const [expandedCompanyId, setExpandedCompanyId] = useState<number | null>(null)
+  const [expandedCompanyId, setExpandedCompanyId] = useState<string | null>(null)
 
-  const careers = useMemo(() => {
-    const values = offers.flatMap((offer: CompanyOffer) => offer.careers)
-    return ['Todas', ...Array.from(new Set(values))]
+  const [careers, setCareers] = useState<string[]>(['Todas'])
+
+  useEffect(() => {
+    let mounted = true
+    const load = async () => {
+      try {
+        const remote = await getCareers()
+        if (!mounted) return
+        const names = remote.map((c) => c.name)
+        setCareers(['Todas', ...Array.from(new Set(names))])
+      } catch {
+        // fallback: derive from offers
+        const values = offers.flatMap((offer: CompanyOffer) => offer.careers)
+        setCareers(['Todas', ...Array.from(new Set(values))])
+      }
+    }
+    void load()
+    return () => { mounted = false }
   }, [offers])
 
   const { urgentes, directas, convenios } = useMemo(() => {
@@ -28,6 +44,11 @@ function Home({ offers }: HomeProps) {
       [o.institution, o.description, ...o.careers].some(v => v.toLowerCase().includes(norm))
     )
 
+    const isActive = (offer: CompanyOffer) => {
+      const expired = Boolean(offer.expiresAt && new Date(`${offer.expiresAt}T23:59:59`) < new Date())
+      return offer.visible && !expired && offer.filled < offer.vacancies
+    }
+
     const sorted = filtered.sort((a: CompanyOffer, b: CompanyOffer) => {
       if (a.visible !== b.visible) return a.visible ? -1 : 1
       if (a.immediateAcceptance !== b.immediateAcceptance) return a.immediateAcceptance ? -1 : 1
@@ -35,9 +56,9 @@ function Home({ offers }: HomeProps) {
     })
 
     return {
-      urgentes: sorted.filter(o => o.visible && o.immediateAcceptance),
-      directas: sorted.filter(o => o.visible && !o.immediateAcceptance),
-      convenios: sorted.filter(o => !o.visible)
+      urgentes: sorted.filter(o => isActive(o) && o.immediateAcceptance),
+      directas: sorted.filter(o => isActive(o) && !o.immediateAcceptance),
+      convenios: sorted.filter(o => !isActive(o))
     }
   }, [offers, searchTerm, selectedCareer])
 
@@ -98,13 +119,19 @@ function Home({ offers }: HomeProps) {
         {/* CONTENIDO PRINCIPAL */}
         <div className="grid lg:grid-cols-[1fr_340px] gap-12">
           <div className="space-y-16">
+            {offers.length === 0 ? (
+              <div className="rounded-[24px] border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
+                <h3 className="text-xl font-semibold text-slate-900">Aún no hay pasantías publicadas</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-600">Cuando el administrador registre ofertas desde el panel, aparecerán aquí automáticamente.</p>
+              </div>
+            ) : null}
             {urgentes.length > 0 && (
               <section>
                 <h3 className="text-2xl font-bold text-red-600 mb-8 flex items-center gap-3"><Zap size={24} /> Solicitudes Urgentes</h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   {urgentes.map((o: CompanyOffer) => (
                     <div key={o.id} className="bg-white p-6 rounded-[24px] border border-red-100 shadow-md">
-                      <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: number) => setExpandedCompanyId(prev => prev === id ? null : id)} />
+                      <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
                     </div>
                   ))}
                 </div>
@@ -116,7 +143,7 @@ function Home({ offers }: HomeProps) {
               <div className="space-y-6">
                 {directas.map((o: CompanyOffer) => (
                   <div key={o.id} className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm hover:shadow-lg transition-all">
-                    <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: number) => setExpandedCompanyId(prev => prev === id ? null : id)} />
+                    <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
                   </div>
                 ))}
               </div>
@@ -128,7 +155,7 @@ function Home({ offers }: HomeProps) {
                 <div className="space-y-4 opacity-70">
                   {convenios.map((o: CompanyOffer) => (
                     <div key={o.id} className="bg-slate-100 p-5 rounded-[20px] border">
-                      <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: number) => setExpandedCompanyId(prev => prev === id ? null : id)} />
+                      <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
                     </div>
                   ))}
                 </div>

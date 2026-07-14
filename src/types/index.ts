@@ -1,5 +1,6 @@
 export interface CompanyOffer {
-  id: number
+  id: string
+  companyId?: string
   institution: string
   address: string
   careers: string[]
@@ -12,10 +13,25 @@ export interface CompanyOffer {
   status: 'vigente' | 'no-vigente'
   immediateAcceptance: boolean
   mapUrl: string
+  expiresAt?: string
+}
+
+export interface SuccessStory {
+  id: string
+  title: string
+  description: string
+  institution: string
+  highlight: string
+  accent: 'blue' | 'emerald' | 'amber'
 }
 
 export interface DocumentItem {
   id: number
   title: string
   description: string
+}
+
+export interface Career {
+  id: string
+  name: string
 }

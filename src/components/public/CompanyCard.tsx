@@ -3,12 +3,20 @@ import type { CompanyOffer } from '../../types'
 interface CompanyCardProps {
   offer: CompanyOffer
   isExpanded: boolean
-  onToggle: (id: number) => void
+  onToggle: (id: string) => void
 }
 
 function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
   const isFull = offer.filled >= offer.vacancies
   const availableSpots = Math.max(0, offer.vacancies - offer.filled)
+  const mapHref = (() => {
+    const raw = offer.mapUrl?.trim()
+    if (!raw) return `https://www.google.com/maps?q=${encodeURIComponent(offer.address)}`
+    if (raw.includes('maps.google') || raw.includes('google.com/maps')) {
+      return `https://www.google.com/maps?q=${encodeURIComponent(offer.address)}`
+    }
+    return raw
+  })()
 
   return (
     <article className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_22px_60px_-28px_rgba(34,59,135,0.45)] sm:rounded-[28px]">
@@ -19,14 +27,23 @@ function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
             <h3 className="mt-2 text-lg font-semibold sm:text-xl">{offer.institution}</h3>
             <p className="mt-2 text-sm text-sky-100">{offer.address}</p>
           </div>
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 text-base font-semibold backdrop-blur sm:h-14 sm:w-14 sm:text-lg">
-            {offer.logo}
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/20 text-base font-semibold backdrop-blur sm:h-14 sm:w-14 sm:text-lg">
+            {offer.logo.startsWith('http') ? <img src={offer.logo} alt={`Logo de ${offer.institution}`} className="h-full w-full object-cover" /> : offer.logo}
           </div>
         </div>
       </div>
 
       <div className="space-y-4 p-4 sm:p-6">
         <p className="text-sm leading-7 text-slate-700">{offer.description}</p>
+
+        <div className="rounded-2xl border border-sky-100 bg-sky-50 p-4">
+          <p className="text-sm font-semibold text-slate-900">¿Para qué carreras va dirigida?</p>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            {offer.careers.length
+              ? `Esta empresa busca principalmente estudiantes de ${offer.careers.join(', ')}.`
+              : 'Aún no se han registrado carreras para esta empresa.'}
+          </p>
+        </div>
 
         <div className="flex flex-wrap gap-2">
           {offer.careers.map((career) => (
@@ -63,7 +80,7 @@ function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
             <div className="rounded-2xl bg-white p-4">
               <p className="text-sm font-semibold text-slate-900">Perfil que buscan</p>
               <p className="mt-2 text-sm leading-7 text-slate-600">
-                {offer.institution} está buscando estudiantes de {offer.careers.join(', ')} para fortalecer el equipo con responsabilidad y compromiso.
+                {offer.institution} está buscando estudiantes de {offer.careers.length ? offer.careers.join(', ') : 'diversas carreras'} para participar en prácticas profesionales con compromiso, aprendizaje y trabajo en equipo.
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {offer.careers.map((career) => (
@@ -87,14 +104,25 @@ function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-2">
-              <iframe
-                title={`Mapa de ${offer.institution}`}
-                src={offer.mapUrl}
-                className="h-56 w-full rounded-2xl border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
+            <div className="rounded-2xl border border-slate-200 bg-white p-4">
+              <p className="text-sm font-semibold text-slate-900">Ubicación de la empresa</p>
+              <p className="mt-2 text-sm leading-7 text-slate-600">{offer.address}</p>
+              <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+                <div className="flex h-56 w-full items-center justify-center bg-gradient-to-br from-sky-100 via-white to-blue-100 p-4 text-center text-sm text-slate-600">
+                  <div>
+                    <p className="font-semibold text-slate-900">Mapa de {offer.institution}</p>
+                    <p className="mt-2">La ubicación se abrirá en Google Maps al hacer clic en el botón.</p>
+                  </div>
+                </div>
+              </div>
+              <a
+                href={mapHref}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-flex items-center rounded-full bg-[#223b87] px-4 py-2 text-sm font-semibold text-white"
+              >
+                Ver en Google Maps
+              </a>
             </div>
           </div>
         )}

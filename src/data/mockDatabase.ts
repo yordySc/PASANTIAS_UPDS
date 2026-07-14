@@ -2,7 +2,7 @@ import type { CompanyOffer, DocumentItem } from '../types'
 
 export const mockOffers: CompanyOffer[] = [
   {
-    id: 1,
+    id: 'mock-1',
     institution: 'Clínica Santa Lucía',
     address: 'Av. San Martín #120, Cochabamba',
     careers: ['Ingeniería de Sistemas', 'Administración', 'Medicina'],
@@ -17,7 +17,7 @@ export const mockOffers: CompanyOffer[] = [
     mapUrl: 'https://www.google.com/maps?q=Av.%20San%20Mart%C3%ADn%20%23120,%20Cochabamba&output=embed',
   },
   {
-    id: 2,
+    id: 'mock-2',
     institution: 'Radio Aclo',
     address: 'Calle Bolívar #45, Cochabamba',
     careers: ['Comunicación Social', 'Diseño Gráfico', 'Marketing'],
@@ -32,7 +32,7 @@ export const mockOffers: CompanyOffer[] = [
     mapUrl: 'https://www.google.com/maps?q=Calle%20Bol%C3%ADvar%20%2345,%20Cochabamba&output=embed',
   },
   {
-    id: 3,
+    id: 'mock-3',
     institution: 'Consejo de la Magistratura',
     address: 'Zona Central, Cochabamba',
     careers: ['Derecho', 'Ingeniería de Sistemas'],
@@ -47,7 +47,7 @@ export const mockOffers: CompanyOffer[] = [
     mapUrl: 'https://www.google.com/maps?q=Zona%20Central,%20Cochabamba&output=embed',
   },
   {
-    id: 4,
+    id: 'mock-4',
     institution: 'Empresa de Telecomunicaciones',
     address: 'Av. Heroínas #300, Cochabamba',
     careers: ['Ingeniería de Sistemas', 'Comercial', 'Telecomunicaciones'],
