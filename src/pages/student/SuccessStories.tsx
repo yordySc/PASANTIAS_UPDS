@@ -78,10 +78,6 @@ function SuccessStories({ stories }: SuccessStoriesProps) {
           </p>
         </motion.section>
       )}
-
-      <footer className="mt-16 border-t border-slate-200 py-8 text-center text-xs text-slate-500 sm:mt-20">
-        © 2026 Universidad Privada Domingo Savio • Todos los derechos reservados.
-      </footer>
     </main>
   )
 }
