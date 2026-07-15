@@ -12,6 +12,33 @@ import imagen1 from '../assets/imagen1UPDS.jpg'
 function Guide() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+  const benefits = [
+    {
+      title: 'Aprende',
+      monogram: 'U',
+      desc: 'Aplica tus conocimientos teóricos en entornos laborales dinámicos y reales.',
+      badge: 'Experiencia real'
+    },
+    {
+      title: 'Conecta',
+      monogram: 'P',
+      desc: 'Construye relaciones profesionales que amplíen tus oportunidades de futuro.',
+      badge: 'Red profesional'
+    },
+    {
+      title: 'Destaca',
+      monogram: 'D',
+      desc: 'Muestra tu potencial, tu iniciativa y tu crecimiento desde el primer día.',
+      badge: 'CV en acción'
+    },
+    {
+      title: 'Avanza',
+      monogram: 'S',
+      desc: 'Da el primer gran paso hacia una carrera sólida, con confianza y propósito.',
+      badge: 'Tu siguiente etapa'
+    }
+  ]
+
   return (
     <div className="min-h-screen bg-slate-50 pt-24">
       
@@ -141,26 +168,31 @@ function Guide() {
                 Ver empresas disponibles <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
               </Link>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2">
-              {[ 
-                {colorBg:'bg-blue-100', colorText:'text-blue-600', title:'Aprende', desc:'Aplica tus conocimientos teóricos en entornos laborales dinámicos.'}, 
-                {colorBg:'bg-emerald-100', colorText:'text-emerald-600', title:'Conecta', desc:'Crea relaciones profesionales valiosas para tu futuro.'}, 
-                {colorBg:'bg-amber-100', colorText:'text-amber-600', title:'Destaca', desc:'Demuestra tu potencial y gana experiencia demostrable en tu CV.'}, 
-                {colorBg:'bg-violet-100', colorText:'text-violet-600', title:'Avanza', desc:'Da el primer gran paso para impulsar tu carrera profesional.'} 
-              ].map((item, index) => (
-                <Reveal key={item.title} delay={index * 0.15}>
-                  <div className="group relative overflow-hidden rounded-[30px] bg-white/70 backdrop-blur-xl border border-white/50 p-8 shadow-xl transition-all duration-500 hover:-translate-y-4 hover:rotate-1 hover:scale-[1.03] hover:shadow-2xl">
-                    <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-blue-200/30 blur-3xl transition-all duration-500 group-hover:scale-150" />
-                    <div className={`relative z-10 mb-6 flex h-16 w-16 items-center justify-center rounded-2xl ${item.colorBg} ${item.colorText} transition-all duration-500 group-hover:rotate-12 group-hover:scale-125`}>
-                      {item.title[0]}
+            <div className="relative">
+              <div className="absolute bottom-8 left-6 top-7 w-px bg-[#008ec4]/20 sm:left-10" />
+              {benefits.map((item, index) => (
+                <Reveal key={item.title} delay={index * 0.12}>
+                  <motion.div
+                    initial={{ opacity: 0, x: -24, y: 20 }}
+                    animate={{ opacity: 1, x: 0, y: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.45 }}
+                    whileHover={{ x: 8 }}
+                    whileTap={{ scale: 0.985, x: 4 }}
+                    className="group relative grid grid-cols-[3.5rem_1fr] gap-3 rounded-2xl px-2 py-4 transition-colors duration-200 active:bg-[#008ec4]/[0.07] sm:grid-cols-[5.5rem_1fr] sm:gap-7 sm:px-0 sm:py-3"
+                  >
+                    <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border border-[#008ec4]/30 bg-slate-50 text-3xl font-black leading-none text-[#008ec4] transition-all duration-300 group-hover:scale-110 group-hover:bg-[#008ec4] group-hover:text-white group-active:scale-105 group-active:bg-[#008ec4] group-active:text-white sm:h-20 sm:w-20 sm:text-6xl">
+                      {item.monogram}
+                      <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-[#f8fafc] bg-[#008ec4] text-[10px] font-bold text-white">0{index + 1}</span>
                     </div>
-                    <h3 className="relative z-10 mb-2 text-xl font-bold text-slate-900 transition-all group-hover:text-blue-700">
-                      {item.title}
-                    </h3>
-                    <p className="relative z-10 text-sm leading-relaxed text-slate-600">
-                      {item.desc}
-                    </p>
-                  </div>
+                    <div className="border-b border-[#008ec4]/15 pb-6 pt-0.5 transition-colors duration-300 group-hover:border-[#008ec4]/60 group-active:border-[#008ec4]/60 sm:pb-8 sm:pt-2">
+                      <div className="flex flex-col items-start gap-1 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-4 sm:gap-y-2">
+                        <h3 className="text-xl font-bold tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-[#008ec4] group-active:text-[#008ec4] sm:text-2xl">{item.title}</h3>
+                        <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#008ec4]">{item.badge}</span>
+                      </div>
+                      <p className="mt-2 max-w-xl text-[13px] leading-6 text-slate-600 sm:mt-3 sm:text-sm sm:leading-7">{item.desc}</p>
+                      <div className="mt-3 h-0.5 w-8 bg-[#008ec4] transition-all duration-300 group-hover:w-16 group-active:w-14 sm:mt-4" />
+                    </div>
+                  </motion.div>
                 </Reveal>
               ))}
             </div>
@@ -169,18 +201,40 @@ function Guide() {
       </section>
 
       {/* Consejos */}
-      <section id="consejos" className="bg-white px-5 py-20 sm:px-6 lg:px-8">
+      <section id="consejos" className="overflow-hidden bg-[#f7fbfc] px-5 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-16 text-center">
+          <div className="mb-14 max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-widest text-[#0085fc]">Consejos Prácticos</p>
             <h2 className="mt-4 text-4xl font-bold text-slate-900">Claves para tener éxito en tu pasantía</h2>
           </div>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {[ "Prepara un CV profesional", "Investiga la empresa", "Sé proactivo", "Cumple con los horarios", "Pide feedback", "Construye tu red" ].map((t, i) => (
-              <div key={i} className="group rounded-3xl bg-white p-8 shadow-sm border border-slate-100 transition hover:shadow-2xl hover:-translate-y-1">
-                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[#223b87] to-[#0085fc] flex items-center justify-center text-white text-2xl mb-6">{i + 1}</div>
-                <h3 className="font-bold">{t}</h3>
-              </div>
+          <div className="relative grid gap-x-12 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+            <div className="absolute left-7 right-7 top-7 hidden h-px bg-[#2596be]/20 xl:block" />
+            {[
+              { title: 'Prepara un CV profesional', text: 'Destaca tus logros con una propuesta clara y ordenada.', accent: 'from-cyan-500 to-blue-600' },
+              { title: 'Investiga la empresa', text: 'Conoce su misión y objetivos para presentarte con más seguridad.', accent: 'from-violet-500 to-fuchsia-500' },
+              { title: 'Sé proactivo', text: 'Pregunta, aprende y demuestra interés desde el primer día.', accent: 'from-emerald-500 to-lime-500' },
+              { title: 'Cumple con los horarios', text: 'La disciplina marca la diferencia en tus primeras experiencias.', accent: 'from-amber-500 to-orange-500' },
+              { title: 'Pide feedback', text: 'Tu crecimiento mejora cuando solicitas orientación constante.', accent: 'from-sky-500 to-cyan-500' },
+              { title: 'Construye tu red', text: 'Cada conversación puede abrirte nuevas oportunidades.', accent: 'from-rose-500 to-pink-500' }
+            ].map((tip, i) => (
+              <motion.div
+                key={tip.title}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08, duration: 0.4 }}
+                whileHover={{ y: -5 }}
+                className="group relative z-10 grid grid-cols-[3.5rem_1fr] gap-5 border-l border-[#2596be]/20 py-1 pl-5 transition-all duration-300 hover:border-[#2596be] md:pl-6 xl:block xl:border-l-0 xl:pl-0"
+              >
+                <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-[#2596be]/25 bg-[#f7fbfc] text-base font-bold text-[#2596be] transition-all duration-300 group-hover:border-[#2596be] group-hover:bg-[#2596be] group-hover:text-white xl:mb-6">
+                  <span className="absolute -inset-2 -z-10 rounded-full bg-[#2596be]/0 transition-all duration-300 group-hover:bg-[#2596be]/10" />
+                  {i + 1}
+                </div>
+                <div className="pb-2 xl:pl-1">
+                  <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-[#2596be]">Consejo clave</p>
+                  <h3 className="text-xl font-bold tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-[#2596be]">{tip.title}</h3>
+                  <p className="mt-3 max-w-sm text-sm leading-7 text-slate-600">{tip.text}</p>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -190,11 +244,28 @@ function Guide() {
       <section id="faq" className="px-5 py-20 bg-slate-50">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-3xl font-bold text-center mb-12">Preguntas Frecuentes</h2>
-          <div className="space-y-6">
-            <div className="p-6 bg-white rounded-2xl border">
-              <h3 className="font-bold">¿Cómo me postulo?</h3>
-              <p className="text-sm text-slate-600">Explora el catálogo y acércate a oficinas.</p>
-            </div>
+          <div className="space-y-4">
+            {[
+              { title: '¿Cómo me postulo?', text: 'Explora el catálogo, elige una oportunidad y acércate a la empresa con tu información actualizada.' },
+              { title: '¿Qué debo llevar?', text: 'Tu CV, una carta breve y una actitud proactiva siempre ayudan a destacar.' },
+              { title: '¿Cuánto dura una pasantía?', text: 'Depende del convenio, pero suele mantenerse en un periodo académico claro.' }
+            ].map((faq, index) => (
+              <motion.div
+                key={faq.title}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.08 }}
+                className={`rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm ${index % 2 === 0 ? 'ml-0 md:ml-4' : 'mr-0 md:mr-4'}`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#0085fc]" />
+                  <div>
+                    <h3 className="font-bold text-slate-900">{faq.title}</h3>
+                    <p className="mt-2 text-sm leading-7 text-slate-600">{faq.text}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

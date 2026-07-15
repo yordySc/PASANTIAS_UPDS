@@ -78,23 +78,43 @@ function Home({ offers }: HomeProps) {
         
         {/* PANEL INFORMATIVO */}
         <Reveal>
-          <div className="bg-gradient-to-br from-blue-700 to-blue-900 rounded-[32px] p-10 text-white shadow-2xl border border-blue-600/30">
-            <div className="flex items-center gap-4 mb-8 text-blue-200">
-              <Info size={32} />
-              <h2 className="text-3xl font-bold text-white tracking-tight">¿Cómo usar este directorio?</h2>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                <h4 className="font-bold text-blue-300 mb-2">Solicitudes Urgentes</h4>
-                <p className="text-sm opacity-80 leading-relaxed">Empresas que requieren pasantes de inmediato. ¡Postúlate cuanto antes!</p>
+          <div className="relative overflow-hidden rounded-[36px] border border-[#008ec4]/35 bg-[#06334a] p-6 text-white shadow-[0_24px_70px_-24px_rgba(6,51,74,0.75)] sm:p-10">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,142,196,0.36),transparent_46%)]" />
+            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full border border-[#008ec4]/25" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-8 text-blue-100">
+                <Info size={32} />
+                <h2 className="text-3xl font-bold text-white tracking-tight">¿Cómo usar este directorio?</h2>
               </div>
-              <div className="p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                <h4 className="font-bold text-blue-300 mb-2">Solicitudes Directas</h4>
-                <p className="text-sm opacity-80 leading-relaxed">Empresas activas con procesos de selección vigentes.</p>
-              </div>
-              <div className="p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                <h4 className="font-bold text-blue-300 mb-2">Convenios Generales</h4>
-                <p className="text-sm opacity-80 leading-relaxed">Convenios activos donde puedes probar suerte presentando tu carta.</p>
+              <div className="grid lg:grid-cols-3 lg:divide-x lg:divide-white/15">
+                {[
+                  { title: 'Solicitudes Urgentes', text: 'Empresas que requieren pasantes de inmediato. ¡Postúlate cuanto antes!', accent: 'from-rose-400 to-orange-400' },
+                  { title: 'Solicitudes Directas', text: 'Empresas activas con procesos de selección vigentes.', accent: 'from-sky-400 to-cyan-400' },
+                  { title: 'Convenios Generales', text: 'Convenios activos donde puedes probar suerte presentando tu carta.', accent: 'from-emerald-400 to-lime-400' }
+                ].map((item, index) => (
+                  <motion.div
+                    key={item.title}
+                    initial={{ opacity: 0, x: index % 2 === 0 ? -24 : 24, y: 20 }}
+                    animate={{ opacity: 1, x: 0, y: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.45 }}
+                    whileHover={{ y: -5 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="group relative border-t border-white/15 px-1 py-7 transition-colors duration-300 first:border-t-0 active:bg-white/[0.06] lg:border-l lg:border-t-0 lg:px-8 lg:py-3 lg:first:border-l-0"
+                  >
+                    <div className={`mb-5 h-1 w-10 transition-all duration-300 group-hover:w-16 ${index === 0 ? 'bg-rose-300' : index === 1 ? 'bg-sky-300' : 'bg-teal-300'}`} />
+                    <div className="flex items-start gap-4">
+                      <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border text-sm font-black ${index === 0 ? 'border-rose-300/50 bg-rose-300/10 text-rose-200' : index === 1 ? 'border-sky-300/50 bg-sky-300/10 text-sky-200' : 'border-teal-300/50 bg-teal-300/10 text-teal-200'}`}>
+                        {index === 0 ? <Zap size={19} /> : index === 1 ? <Building2 size={19} /> : <AlertCircle size={19} />}
+                      </div>
+                      <span className="pt-1 text-xs font-bold tracking-[0.18em] text-white/40">0{index + 1}</span>
+                    </div>
+                    <div className="mt-5">
+                      <h4 className="text-lg font-bold text-white">{item.title}</h4>
+                      <p className="mt-2 text-sm leading-6 text-blue-50/80">{item.text}</p>
+                      <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#7dd3fc]">Ver esta categoría ↓</p>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </div>
           </div>
@@ -130,7 +150,7 @@ function Home({ offers }: HomeProps) {
                 <h3 className="text-2xl font-bold text-red-600 mb-8 flex items-center gap-3"><Zap size={24} /> Solicitudes Urgentes</h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   {urgentes.map((o: CompanyOffer) => (
-                    <div key={o.id} className="bg-white p-6 rounded-[24px] border border-red-100 shadow-md">
+                    <div key={o.id}>
                       <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
                     </div>
                   ))}
@@ -142,7 +162,7 @@ function Home({ offers }: HomeProps) {
               <h3 className="text-xl font-bold text-slate-800 mb-8 flex items-center gap-3"><Building2 className="text-blue-600" /> Solicitudes Directas</h3>
               <div className="space-y-6">
                 {directas.map((o: CompanyOffer) => (
-                  <div key={o.id} className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm hover:shadow-lg transition-all">
+                  <div key={o.id}>
                     <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
                   </div>
                 ))}
@@ -154,7 +174,7 @@ function Home({ offers }: HomeProps) {
                 <h3 className="text-lg font-bold text-slate-500 mb-8 flex items-center gap-3"><AlertCircle size={20} /> Convenios Generales</h3>
                 <div className="space-y-4 opacity-70">
                   {convenios.map((o: CompanyOffer) => (
-                    <div key={o.id} className="bg-slate-100 p-5 rounded-[20px] border">
+                    <div key={o.id}>
                       <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
                     </div>
                   ))}
