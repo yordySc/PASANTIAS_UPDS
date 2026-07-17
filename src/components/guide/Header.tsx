@@ -84,24 +84,31 @@ export default function Header() {
                         <motion.div
                             initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed top-0 right-0 z-[70] h-full w-[80%] max-w-sm bg-gradient-to-br from-[#223b87] to-[#0085fc] p-8 shadow-2xl flex flex-col"
+                            className="fixed top-0 right-0 z-[70] flex h-full w-full max-w-md flex-col overflow-hidden bg-[#071d4e] px-6 py-7 shadow-2xl sm:px-10"
                         >
                             <button onClick={() => setMenuOpen(false)} className="absolute top-8 right-8 text-white text-3xl z-50">✕</button>
                             
-                            <div className="flex flex-col items-center justify-center pt-10 mb-12">
-                                <img src={logotipoUPDS} className="h-16 w-auto mb-4" alt="Logo" />
+                            <div className="relative flex justify-center pt-5">
+                                <div className="inline-flex bg-white px-5 py-3 shadow-[8px_8px_0_rgba(0,133,252,0.42)]">
+                                    <img src={logotipoUPDS} className="h-11 w-auto" alt="UPDS" />
+                                </div>
                             </div>
                             
-                            <div className="flex flex-col gap-6 flex-grow">
+                            <div className="relative mt-16 flex flex-grow flex-col">
                                 {menuLinks.map((link, index) => (
-                                    <motion.div key={link.name} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.1 }}>
+                                    <motion.div key={link.name} initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.08 + 0.1 }}>
                                         {link.type === "a" ? (
-                                            <a href={link.path} onClick={() => setMenuOpen(false)} className="text-2xl font-bold text-white/90 hover:text-white hover:pl-4 transition-all block border-b border-white/20 pb-4">{link.name}</a>
+                                            <a href={link.path} onClick={() => setMenuOpen(false)} className="block py-5 text-2xl font-bold tracking-tight text-white transition-colors hover:text-cyan-200">
+                                                {link.name}
+                                            </a>
                                         ) : (
-                                            <Link to={link.path} onClick={() => setMenuOpen(false)} className="text-2xl font-bold text-white/90 hover:text-white hover:pl-4 transition-all block border-b border-white/20 pb-4">{link.name}</Link>
+                                            <Link to={link.path} onClick={() => setMenuOpen(false)} className="block py-5 text-2xl font-bold tracking-tight text-white transition-colors hover:text-cyan-200">
+                                                {link.name}
+                                            </Link>
                                         )}
                                     </motion.div>
                                 ))}
+                                <p className="mt-auto pt-8 text-[10px] font-bold uppercase tracking-[0.24em] text-white/45">Pasantias · Universidad Privada Domingo Savio</p>
                             </div>
                         </motion.div>
                     </>

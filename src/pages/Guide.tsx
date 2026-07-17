@@ -5,9 +5,11 @@ import Header from '../components/guide/Header'
 import AnimatedBackground from '../components/guide/AnimatedBackground'
 import Reveal from '../components/guide/Reveal'
 import logoUPDS from '../assets/logo-upds.png'
-import { Mail, Phone, MapPin } from 'lucide-react'
+import { Clock3, FileText, Lightbulb, Mail, MapPin, MessagesSquare, Phone, SearchCheck, UsersRound } from 'lucide-react'
+import { FaFacebookF, FaInstagram } from 'react-icons/fa'
 import imagen2UPDS from '../assets/imagen2UPDS.jpg'
 import imagen1 from '../assets/imagen1UPDS.jpg'
+import upds3D from '../assets/UPDS_3D.png'
 
 function Guide() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -63,15 +65,15 @@ function Guide() {
               <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl animate-pulse" />
 
               {/* PASO 6.1 - Mejorar el Badge */}
-              <motion.p 
+              <motion.div 
                 initial={{ opacity: 0, scale: .8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: .1, duration: .6 }}
                 className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/20 px-5 py-2 text-sm font-semibold uppercase tracking-[4px] text-white backdrop-blur-xl shadow-lg animate-glow"
               >
-                <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse"/>
+                <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse"/>
                 Guía Oficial de Pasantías UPDS
-              </motion.p>
+              </motion.div>
               
               <motion.h1 
                 initial={{ opacity: 0, y: 30 }} 
@@ -168,29 +170,28 @@ function Guide() {
                 Ver empresas disponibles <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
               </Link>
             </div>
-            <div className="relative">
-              <div className="absolute bottom-8 left-6 top-7 w-px bg-[#008ec4]/20 sm:left-10" />
+            <div className="grid gap-4 sm:grid-cols-2">
               {benefits.map((item, index) => (
                 <Reveal key={item.title} delay={index * 0.12}>
                   <motion.div
                     initial={{ opacity: 0, x: -24, y: 20 }}
                     animate={{ opacity: 1, x: 0, y: 0 }}
                     transition={{ delay: index * 0.1, duration: 0.45 }}
-                    whileHover={{ x: 8 }}
-                    whileTap={{ scale: 0.985, x: 4 }}
-                    className="group relative grid grid-cols-[3.5rem_1fr] gap-3 rounded-2xl px-2 py-4 transition-colors duration-200 active:bg-[#008ec4]/[0.07] sm:grid-cols-[5.5rem_1fr] sm:gap-7 sm:px-0 sm:py-3"
+                    whileHover={{ y: -6 }}
+                    whileTap={{ scale: 0.985 }}
+                    className="group relative isolate h-full overflow-hidden border border-slate-200 bg-white p-5 shadow-[0_12px_30px_-24px_rgba(15,23,42,0.45)] transition-all duration-300 hover:border-[#008ec4]/45 hover:shadow-[0_20px_42px_-24px_rgba(0,133,252,0.32)] sm:p-6"
                   >
-                    <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border border-[#008ec4]/30 bg-slate-50 text-3xl font-black leading-none text-[#008ec4] transition-all duration-300 group-hover:scale-110 group-hover:bg-[#008ec4] group-hover:text-white group-active:scale-105 group-active:bg-[#008ec4] group-active:text-white sm:h-20 sm:w-20 sm:text-6xl">
-                      {item.monogram}
-                      <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-[#f8fafc] bg-[#008ec4] text-[10px] font-bold text-white">0{index + 1}</span>
-                    </div>
-                    <div className="border-b border-[#008ec4]/15 pb-6 pt-0.5 transition-colors duration-300 group-hover:border-[#008ec4]/60 group-active:border-[#008ec4]/60 sm:pb-8 sm:pt-2">
-                      <div className="flex flex-col items-start gap-1 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-4 sm:gap-y-2">
-                        <h3 className="text-xl font-bold tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-[#008ec4] group-active:text-[#008ec4] sm:text-2xl">{item.title}</h3>
-                        <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#008ec4]">{item.badge}</span>
+                    <span className="pointer-events-none absolute -right-1 -top-8 -z-10 select-none text-9xl font-black leading-none tracking-tighter text-[#008ec4]/[0.07] transition-transform duration-500 group-hover:scale-110 group-hover:text-[#008ec4]/[0.1]">0{index + 1}</span>
+                    <div className="mb-6 flex items-center justify-between">
+                      <div className="flex h-11 w-11 items-center justify-center bg-slate-900 text-xl font-black text-white transition-all duration-300 [clip-path:polygon(0_0,100%_0,82%_100%,0_100%)] group-hover:bg-[#008ec4] group-hover:pr-1">
+                        {item.monogram}
                       </div>
-                      <p className="mt-2 max-w-xl text-[13px] leading-6 text-slate-600 sm:mt-3 sm:text-sm sm:leading-7">{item.desc}</p>
-                      <div className="mt-3 h-0.5 w-8 bg-[#008ec4] transition-all duration-300 group-hover:w-16 group-active:w-14 sm:mt-4" />
+                    </div>
+                    <div>
+                      <p className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{item.badge}</p>
+                      <h3 className="text-xl font-bold tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-[#008ec4] sm:text-2xl">{item.title}</h3>
+                      <p className="mt-3 text-sm leading-7 text-slate-600">{item.desc}</p>
+                      <div className="mt-6 h-0.5 w-8 bg-[#008ec4] transition-all duration-300 group-hover:w-16" />
                     </div>
                   </motion.div>
                 </Reveal>
@@ -207,35 +208,45 @@ function Guide() {
             <p className="text-sm font-semibold uppercase tracking-widest text-[#0085fc]">Consejos Prácticos</p>
             <h2 className="mt-4 text-4xl font-bold text-slate-900">Claves para tener éxito en tu pasantía</h2>
           </div>
-          <div className="relative grid gap-x-12 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
-            <div className="absolute left-7 right-7 top-7 hidden h-px bg-[#2596be]/20 xl:block" />
+          <div className="relative mx-auto max-w-4xl space-y-3">
+            <div className="absolute bottom-9 left-5 top-9 w-px bg-gradient-to-b from-[#2596be]/10 via-[#2596be]/50 to-[#2596be]/10 sm:left-8" />
             {[
-              { title: 'Prepara un CV profesional', text: 'Destaca tus logros con una propuesta clara y ordenada.', accent: 'from-cyan-500 to-blue-600' },
+              { title: 'Prepara un CV profesional', text: 'Destaca tus logros con una propuesta clara y ordenada.', icon: FileText },
               { title: 'Investiga la empresa', text: 'Conoce su misión y objetivos para presentarte con más seguridad.', accent: 'from-violet-500 to-fuchsia-500' },
               { title: 'Sé proactivo', text: 'Pregunta, aprende y demuestra interés desde el primer día.', accent: 'from-emerald-500 to-lime-500' },
               { title: 'Cumple con los horarios', text: 'La disciplina marca la diferencia en tus primeras experiencias.', accent: 'from-amber-500 to-orange-500' },
               { title: 'Pide feedback', text: 'Tu crecimiento mejora cuando solicitas orientación constante.', accent: 'from-sky-500 to-cyan-500' },
               { title: 'Construye tu red', text: 'Cada conversación puede abrirte nuevas oportunidades.', accent: 'from-rose-500 to-pink-500' }
-            ].map((tip, i) => (
+            ].map((tip, i) => {
+              const TipIcon = [FileText, SearchCheck, Lightbulb, Clock3, MessagesSquare, UsersRound][i]
+
+              return (
               <motion.div
                 key={tip.title}
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08, duration: 0.4 }}
-                whileHover={{ y: -5 }}
-                className="group relative z-10 grid grid-cols-[3.5rem_1fr] gap-5 border-l border-[#2596be]/20 py-1 pl-5 transition-all duration-300 hover:border-[#2596be] md:pl-6 xl:block xl:border-l-0 xl:pl-0"
+                whileHover={{ x: 8 }}
+                whileTap={{ scale: 0.99, x: 4 }}
+                className="group relative grid grid-cols-[3.25rem_1fr] gap-4 py-2 sm:grid-cols-[4.5rem_1fr] sm:gap-6"
               >
-                <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-[#2596be]/25 bg-[#f7fbfc] text-base font-bold text-[#2596be] transition-all duration-300 group-hover:border-[#2596be] group-hover:bg-[#2596be] group-hover:text-white xl:mb-6">
-                  <span className="absolute -inset-2 -z-10 rounded-full bg-[#2596be]/0 transition-all duration-300 group-hover:bg-[#2596be]/10" />
-                  {i + 1}
+                <div className="relative z-10 pt-3 sm:pt-4">
+                  <div className="flex h-10 w-10 items-center justify-center border border-[#2596be]/25 bg-white text-[#2596be] shadow-[5px_5px_0_rgba(37,150,190,0.14)] transition-all duration-300 [clip-path:polygon(18%_0,100%_0,100%_82%,82%_100%,0_100%,0_18%)] group-hover:-translate-y-1 group-hover:bg-[#2596be] group-hover:text-white group-hover:shadow-[7px_7px_0_rgba(37,150,190,0.2)] sm:h-14 sm:w-14">
+                    <TipIcon className="h-5 w-5" strokeWidth={1.8} />
+                  </div>
                 </div>
-                <div className="pb-2 xl:pl-1">
-                  <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-[#2596be]">Consejo clave</p>
-                  <h3 className="text-xl font-bold tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-[#2596be]">{tip.title}</h3>
-                  <p className="mt-3 max-w-sm text-sm leading-7 text-slate-600">{tip.text}</p>
+                <div className="relative overflow-hidden border border-slate-200/80 bg-white px-5 py-5 shadow-sm transition-all duration-300 before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-[#2596be] before:scale-y-0 before:transition-transform before:duration-300 group-hover:-translate-y-1 group-hover:border-[#2596be]/35 group-hover:shadow-lg group-hover:shadow-[#2596be]/10 group-hover:before:scale-y-100 sm:px-7 sm:py-6">
+                  <span className="absolute right-4 top-3 text-[10px] font-black tracking-[0.22em] text-[#2596be]/25 sm:right-6 sm:top-4">0{i + 1}</span>
+                  <div className="flex flex-col items-start gap-1 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-4 sm:gap-y-2">
+                    <h3 className="text-xl font-bold tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-[#2596be] sm:text-2xl">{tip.title}</h3>
+                    <span className="border-l-2 border-[#2596be]/30 pl-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#2596be]">Consejo clave</span>
+                  </div>
+                  <p className="mt-2 max-w-xl text-[13px] leading-6 text-slate-600 sm:mt-3 sm:text-sm sm:leading-7">{tip.text}</p>
+                  <div className="mt-4 h-px w-10 bg-[#2596be]/40 transition-all duration-300 group-hover:w-20 group-hover:bg-[#2596be]" />
                 </div>
               </motion.div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
@@ -270,9 +281,13 @@ function Guide() {
         </div>
       </section>
 
-      <section className="bg-gradient-to-r from-[#223b87] to-[#0085fc] px-5 py-20 text-center text-white">
+      <section className="relative isolate overflow-hidden bg-gradient-to-r from-[#223b87] to-[#0085fc] px-5 py-20 text-center text-white">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-30 [background-image:radial-gradient(rgba(255,255,255,0.38)_1px,transparent_1px)] [background-size:18px_18px]" />
+        <img src={upds3D} alt="" aria-hidden="true" className="pointer-events-none absolute bottom-0 left-1/2 z-0 w-60 -translate-x-1/2 opacity-20 sm:left-auto sm:-right-10 sm:w-[28rem] sm:translate-x-0 sm:opacity-25 lg:right-10 lg:w-[30rem]" />
+        <div className="relative z-10">
         <h2 className="text-4xl font-bold">¿Listo para dar el siguiente paso?</h2>
         <Link to="/student" className="mt-10 inline-block rounded-2xl bg-white px-10 py-4 font-semibold text-[#223b87]">Ver empresas</Link>
+        </div>
       </section>
 
       <footer className="border-t bg-white px-5 py-12 text-slate-600">
@@ -280,15 +295,15 @@ function Guide() {
           <div className="grid gap-8 md:grid-cols-3 items-start">
             <div className="space-y-4">
               <img src={logoUPDS} alt="UPDS" className="h-12 w-auto" />
-              <p className="text-sm text-slate-700">Universidad Privada Domingo Savio — Guía oficial de pasantías. Conectamos estudiantes con oportunidades reales para impulsar su desarrollo profesional.</p>
+              <p className="text-sm text-slate-700">Universidad Privada Domingo Savio — Guía oficial de pasantías.</p>
               <div className="flex items-center gap-3 text-sm text-slate-600">
-                <MapPin size={16} /> <span>Av. Example 123, Cochabamba, Bolivia</span>
+                <MapPin size={16} /> <span>B/ German Busch esquina Fabián Ruiz , Ciudad Tarija, Bolivia</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-slate-600">
-                <Phone size={16} /> <a href="tel:+59112345678" className="hover:underline">+591 123 45678</a>
+                <Phone size={16} /> <a href="tel:+591 75111830" className="hover:underline">+591 75111830</a>
               </div>
               <div className="flex items-center gap-3 text-sm text-slate-600">
-                <Mail size={16} /> <a href="mailto:contacto@upds.edu.bo" className="hover:underline">contacto@upds.edu.bo</a>
+                <Mail size={16} /> <a href="mailto:contacto@upds.edu.bo" className="hover:underline">infoupds.tarija@upds.edu.bo</a>
               </div>
             </div>
             <div>
@@ -297,17 +312,18 @@ function Guide() {
                 <li><a href="/student" className="hover:underline">Empresas</a></li>
                 <li><a href="/student/success-stories" className="hover:underline">Casos de éxito</a></li>
                 <li><a href="/guide" className="hover:underline">Guía</a></li>
-                <li><a href="/admin" className="hover:underline">Panel Admin</a></li>
               </ul>
             </div>
             <div>
               <h4 className="mb-3 text-sm font-semibold text-slate-800">Síguenos</h4>
               <p className="text-sm text-slate-600 mb-3">Sigue a la UPDS en redes para mantenerte al día.</p>
               <div className="flex items-center gap-3">
-                <a href="#" aria-label="Facebook UPDS" className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-700 hover:bg-slate-200">FB</a>
-                <a href="#" aria-label="Instagram UPDS" className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-700 hover:bg-slate-200">IG</a>
-                <a href="#" aria-label="LinkedIn UPDS" className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-700 hover:bg-slate-200">IN</a>
-                <a href="#" aria-label="YouTube UPDS" className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-700 hover:bg-slate-200">YT</a>
+                <a href="https://www.facebook.com/universidadprivadadomingosaviotarija" target="_blank" rel="noreferrer" aria-label="Facebook UPDS Tarija" className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1877f2] text-white transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/30">
+                  <FaFacebookF size={18} />
+                </a>
+                <a href="https://www.instagram.com/upds_tarija?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" aria-label="Instagram UPDS Tarija" className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-pink-500/30">
+                  <FaInstagram size={19} />
+                </a>
               </div>
             </div>
           </div>

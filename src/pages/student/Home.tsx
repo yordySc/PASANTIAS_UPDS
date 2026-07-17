@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Search, GraduationCap, Building2, Award, ChevronRight, AlertCircle, Zap, Info } from 'lucide-react'
+import { Search, GraduationCap, Building2, ChevronRight, AlertCircle, Zap, Info } from 'lucide-react'
 import CompanyCard from '../../components/public/CompanyCard'
 import AnimatedBackground from '../../components/guide/AnimatedBackground'
 import Reveal from '../../components/guide/Reveal'
 import type { CompanyOffer } from '../../types'
 import { getCareers } from '../../services/internships'
+import graduado from '../../assets/Graduado.png'
 
 interface HomeProps {
   offers: CompanyOffer[]
@@ -184,11 +185,15 @@ function Home({ offers }: HomeProps) {
           </div>
 
           <aside>
-            <div className="sticky top-28 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[32px] p-8 text-white shadow-2xl">
-              <Award className="mb-4 opacity-50" size={48} />
-              <h3 className="text-2xl font-bold mb-2">Casos de Éxito</h3>
-              <p className="text-blue-100 text-sm mb-6">Historias de estudiantes que lograron su puesto ideal.</p>
-              <Link to="/student/success-stories" className="block w-full bg-white text-blue-700 py-4 rounded-xl font-bold text-center hover:bg-blue-50 transition">Ver historias →</Link>
+            <div className="sticky top-28 isolate overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0a347c] via-[#1457b8] to-[#008ec4] p-8 text-white shadow-2xl">
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-25 [background-image:radial-gradient(rgba(255,255,255,0.55)_1px,transparent_1px)] [background-size:16px_16px]" />
+              <img src={graduado} alt="" aria-hidden="true" className="pointer-events-none absolute -bottom-3 -right-5 z-0 w-64 opacity-65" />
+              <div className="relative z-10">
+                <p className="mb-8 text-[10px] font-black uppercase tracking-[0.28em] text-cyan-100">UPDS · Trayectorias</p>
+                <h3 className="text-2xl font-bold mb-2">Casos de Éxito</h3>
+                <p className="text-blue-50 text-sm mb-6 max-w-[13rem]">Historias de estudiantes que lograron su puesto ideal.</p>
+                <Link to="/student/success-stories" className="inline-flex items-center rounded-lg bg-white/95 px-5 py-3 text-sm font-bold text-blue-700 transition hover:-translate-y-1 hover:bg-white hover:shadow-lg">Ver historias →</Link>
+              </div>
             </div>
           </aside>
         </div>
