@@ -257,9 +257,9 @@ function Guide() {
           <h2 className="text-3xl font-bold text-center mb-12">Preguntas Frecuentes</h2>
           <div className="space-y-4">
             {[
-              { title: '¿Cómo me postulo?', text: 'Explora el catálogo, elige una oportunidad y acércate a la empresa con tu información actualizada.' },
-              { title: '¿Qué debo llevar?', text: 'Tu CV, una carta breve y una actitud proactiva siempre ayudan a destacar.' },
-              { title: '¿Cuánto dura una pasantía?', text: 'Depende del convenio, pero suele mantenerse en un periodo académico claro.' }
+              { title: '¿Cómo me postulo?', text: 'Explora el catálogo, elige una oportunidad y acércate a pasantias.' },
+              { title: '¿Qué debo llevar?', text: 'Tu CV, una fotocopia de tu carnet de identidad y una actitud proactiva.' },
+              { title: '¿Cuánto dura una pasantía?', text: 'Se tiene que cumplir un total de 170 horas.' }
             ].map((faq, index) => (
               <motion.div
                 key={faq.title}
