@@ -126,7 +126,7 @@ function Home({ offers }: HomeProps) {
       </section>
 
       {/* Identificador para el scroll automático */}
-      <main id="directorio" className="relative z-20 mx-auto -mt-10 max-w-7xl space-y-20 px-6 py-12">
+      <main id="directorio" className="relative z-20 mx-auto -mt-10 max-w-7xl space-y-20 px-4 py-10 sm:px-6 sm:py-12">
         
         {/* PANEL INFORMATIVO */}
         <Reveal>
@@ -209,8 +209,8 @@ function Home({ offers }: HomeProps) {
         </Reveal>
 
         {/* CONTENIDO PRINCIPAL */}
-        <div className="grid gap-12 lg:grid-cols-[1fr_340px]">
-          <div className="space-y-16">
+        <div className="grid min-w-0 gap-12 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="min-w-0 space-y-16">
             {offers.length === 0 ? (
               <div className="rounded-[24px] border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
                 <h3 className="text-xl font-semibold text-slate-900">Aún no hay pasantías publicadas</h3>
@@ -230,7 +230,7 @@ function Home({ offers }: HomeProps) {
                 </div>
                 <div className="grid gap-6 md:grid-cols-2">
                   {urgentes.map((o: CompanyOffer) => (
-                    <div key={o.id}>
+                    <div key={o.id} className="min-w-0">
                       <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
                     </div>
                   ))}
@@ -250,7 +250,7 @@ function Home({ offers }: HomeProps) {
               </div>
               <div className="space-y-6">
                 {directas.map((o: CompanyOffer) => (
-                  <div key={o.id}>
+                  <div key={o.id} className="min-w-0">
                     <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
                   </div>
                 ))}
@@ -270,7 +270,7 @@ function Home({ offers }: HomeProps) {
                 </div>
                 <div className="space-y-4 opacity-90">
                   {convenios.map((o: CompanyOffer) => (
-                    <div key={o.id}>
+                    <div key={o.id} className="min-w-0">
                       <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
                     </div>
                   ))}
@@ -279,15 +279,15 @@ function Home({ offers }: HomeProps) {
             )}
           </div>
 
-          <aside>
-            <div className="sticky top-28 isolate overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0a347c] via-[#1457b8] to-[#008ec4] p-8 text-white shadow-2xl">
+          <aside className="min-w-0">
+            <div className="relative isolate overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0a347c] via-[#1457b8] to-[#008ec4] p-6 text-white shadow-2xl sm:p-8 lg:sticky lg:top-28">
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-25 [background-image:radial-gradient(rgba(255,255,255,0.55)_1px,transparent_1px)] [background-size:16px_16px]" />
-              <img src={graduado} alt="" aria-hidden="true" className="pointer-events-none absolute -bottom-3 -right-5 z-0 w-64 opacity-65" />
+              <img src={graduado} alt="" aria-hidden="true" className="pointer-events-none absolute -bottom-5 -right-3 z-0 w-52 opacity-40 sm:w-64 sm:opacity-65" />
               <div className="relative z-10">
                 <p className="mb-8 text-[10px] font-black uppercase tracking-[0.28em] text-cyan-100">UPDS · Trayectorias</p>
                 <h3 className="mb-2 text-2xl font-bold">Casos de Éxito</h3>
                 <p className="mb-6 max-w-[13rem] text-sm text-blue-50">Historias de estudiantes que lograron su puesto ideal.</p>
-                <Link to="/student/success-stories" className="inline-flex items-center rounded-lg bg-white/95 px-5 py-3 text-sm font-bold text-blue-700 transition hover:-translate-y-1 hover:bg-white hover:shadow-lg">Ver historias →</Link>
+                <Link to="/student/success-stories" className="relative z-10 inline-flex max-w-full items-center rounded-lg bg-white/95 px-4 py-3 text-sm font-bold text-blue-700 transition hover:-translate-y-1 hover:bg-white hover:shadow-lg">Ver historias →</Link>
               </div>
             </div>
           </aside>

@@ -27,21 +27,21 @@ function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
       whileTap={{ scale: 0.99 }}
-      className="group relative overflow-hidden rounded-[30px] border border-[#008ec4]/20 bg-white shadow-[0_24px_70px_-34px_rgba(0,142,196,0.28)] transition-shadow duration-300 hover:shadow-[0_28px_80px_-34px_rgba(0,142,196,0.42)]"
+      className="group relative w-full min-w-0 overflow-hidden rounded-[30px] border border-[#008ec4]/20 bg-white shadow-[0_24px_70px_-34px_rgba(0,142,196,0.28)] transition-shadow duration-300 hover:shadow-[0_28px_80px_-34px_rgba(0,142,196,0.42)]"
     >
       <div className="absolute inset-y-0 left-0 w-1 bg-[#008ec4]" />
       <div className="relative space-y-5 p-5 pl-6 sm:p-7 sm:pl-8">
         <div className="flex items-start justify-between gap-4">
-            <div className="space-y-3">
+            <div className="min-w-0 space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#008ec4]/20 bg-[#008ec4]/[0.06] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#0075a1]">
               <Sparkles size={12} />
               {offer.type}
             </div>
             <div>
-              <h3 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">{offer.institution}</h3>
-              <p className="mt-2 flex items-center gap-2 text-sm text-slate-500">
+              <h3 className="break-words text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">{offer.institution}</h3>
+              <p className="mt-2 flex min-w-0 items-start gap-2 text-sm text-slate-500">
                 <MapPin size={15} className="shrink-0 text-[#008ec4]" />
-                {offer.address}
+                <span className="break-words">{offer.address}</span>
               </p>
             </div>
           </div>
@@ -61,12 +61,12 @@ function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-3 rounded-2xl bg-slate-50 px-4 py-4 sm:px-5">
+        <div className="grid grid-cols-1 gap-4 rounded-2xl bg-slate-50 px-4 py-4 sm:px-5">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Cupos disponibles</p>
             <p className="mt-1 text-2xl font-black tracking-tight text-[#0075a1]">{availableSpots} <span className="text-sm font-bold">cupos</span></p>
           </div>
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-wrap items-center gap-2">
           {offer.immediateAcceptance && (
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">Aceptación inmediata</span>
           )}
