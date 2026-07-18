@@ -9,7 +9,7 @@ import { Clock3, FileText, Lightbulb, Mail, MapPin, MessagesSquare, Phone, Searc
 import { FaFacebookF, FaInstagram } from 'react-icons/fa'
 import imagen2UPDS from '../assets/imagen2UPDS.jpg'
 import imagen1 from '../assets/imagen1UPDS.jpg'
-import upds3D from '../assets/UPDS_3D.png'
+import graduado from '../assets/Graduado.png'
 
 function Guide() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -281,12 +281,18 @@ function Guide() {
         </div>
       </section>
 
-      <section className="relative isolate overflow-hidden bg-gradient-to-r from-[#223b87] to-[#0085fc] px-5 py-20 text-center text-white">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-30 [background-image:radial-gradient(rgba(255,255,255,0.38)_1px,transparent_1px)] [background-size:18px_18px]" />
-        <img src={upds3D} alt="" aria-hidden="true" className="pointer-events-none absolute bottom-0 left-1/2 z-0 w-60 -translate-x-1/2 opacity-20 sm:left-auto sm:-right-10 sm:w-[28rem] sm:translate-x-0 sm:opacity-25 lg:right-10 lg:w-[30rem]" />
-        <div className="relative z-10">
-        <h2 className="text-4xl font-bold">¿Listo para dar el siguiente paso?</h2>
-        <Link to="/student" className="mt-10 inline-block rounded-2xl bg-white px-10 py-4 font-semibold text-[#223b87]">Ver empresas</Link>
+      <section className="px-5 py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="relative isolate overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0a347c] via-[#1457b8] to-[#008ec4] p-8 text-white shadow-2xl sm:p-10 lg:p-12">
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-25 [background-image:radial-gradient(rgba(255,255,255,0.55)_1px,transparent_1px)] [background-size:16px_16px]" />
+            <img src={graduado} alt="" aria-hidden="true" className="pointer-events-none absolute -bottom-3 -right-5 z-0 w-64 opacity-65 sm:w-80 lg:w-96" />
+            <div className="relative z-10 max-w-xl">
+              <p className="mb-6 text-[10px] font-black uppercase tracking-[0.28em] text-cyan-100">UPDS · Pasantías</p>
+              <h2 className="text-3xl font-bold sm:text-4xl">¿Listo para dar el siguiente paso?</h2>
+              <p className="mt-3 text-sm text-blue-50 sm:text-base">Explora las empresas disponibles y descubre la oportunidad que mejor se adapta a ti.</p>
+              <Link to="/student" className="mt-8 inline-flex items-center rounded-lg bg-white/95 px-5 py-3 text-sm font-bold text-blue-700 transition hover:-translate-y-1 hover:bg-white hover:shadow-lg">Ver empresas</Link>
+            </div>
+          </div>
         </div>
       </section>
 
