@@ -1,6 +1,6 @@
 ﻿import { useEffect, useMemo, useState, type Dispatch, type FormEvent, type SetStateAction } from 'react'
 import { motion } from 'framer-motion'
-import { BriefcaseBusiness, Sparkles, PlusCircle, Trash2, PencilLine, BadgeCheck, CircleAlert } from 'lucide-react'
+import { BriefcaseBusiness, Sparkles, PlusCircle, Trash2, PencilLine, BadgeCheck, CircleAlert, ImagePlus } from 'lucide-react'
 import type { Career, CompanyOffer } from '../../types'
 import { isSupabaseConfigured } from '../../lib/supabase'
 import { deleteOffer, getCareers, saveOffer, uploadLogo } from '../../services/internships'
@@ -13,7 +13,7 @@ interface ManageProps {
 
 const blank = (): Omit<CompanyOffer, 'id' | 'companyId'> => {
   const defaultExpiresAt = new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
-  return { institution: '', address: '', careers: [], vacancies: 1, filled: 0, visible: true, type: 'Pasantía vigente', description: '', logo: '', status: 'vigente', immediateAcceptance: false, mapUrl: '', expiresAt: defaultExpiresAt }
+  return { institution: '', address: '', careers: [], vacancies: 1, filled: 0, visible: true, type: 'Solicitud activa', description: '', logo: '', status: 'vigente', immediateAcceptance: false, mapUrl: '', expiresAt: defaultExpiresAt }
 }
 
 function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
@@ -119,7 +119,7 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.35em] text-sky-100">Panel administrativo</p>
           <h2 className="mt-2 text-3xl font-semibold">Gestiona empresas, carreras y vacantes</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-sky-100">Cada carrera que registres se mostrará en el filtro del home para que los estudiantes encuentren más rápido las oportunidades.</p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-sky-100">Aquí encontrarás todo lo necesario para actualizar las ofertas que ven los estudiantes, organizar las carreras y controlar los cupos disponibles de forma sencilla.</p>
         </div>
         <button onClick={() => setShowForm(true)} className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#223b87] transition hover:scale-[1.01]">
           <PlusCircle size={18} /> Nueva empresa / oferta
@@ -156,19 +156,17 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
                 <span className="mb-2 block text-sm font-semibold text-slate-700">Tipo de oportunidad</span>
                 <p className="mb-2 text-xs text-slate-500">Elige el formato que mejor represente la vacante.</p>
                 <select value={draft.type} onChange={(event) => setDraft({ ...draft, type: event.target.value })} className="w-full rounded-[18px] border border-slate-200 bg-white px-4 py-3.5 text-sm outline-none focus:border-[#0085fc]">
-                  <option value="Pasantía vigente">Pasantía vigente</option>
-                  <option value="Solicitudes Directas">Solicitudes Directas</option>
-                  <option value="Convenios Generales">Convenios Generales</option>
-                  <option value="Prácticas profesionales">Prácticas profesionales</option>
+                  <option value="Solicitud activa">Solicitud activa</option>
+                  <option value="Empresa con convenio">Empresa con convenio</option>
                 </select>
               </label>
               <Field label="Dirección" value={draft.address} change={(value) => setDraft({ ...draft, address: value })} required placeholder="Ej. Av. América, zona El Alto" description="Agrega la ubicación donde se desarrolla la oportunidad." />
               <Field label="URL del mapa de Google" value={draft.mapUrl} change={(value) => setDraft({ ...draft, mapUrl: value })} required placeholder="https://maps.google.com/…" description="Pega el enlace embebido para mostrar la ubicación." />
             </div>
-            <label className="rounded-[20px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
-              <span className="mb-2 block font-semibold">Cargar logo</span>
-              <p className="mb-2 text-xs text-slate-500">Sube una imagen para que la empresa se vea más profesional.</p>
-              <input type="file" accept="image/*" required={!editing && !logoFile && !draft.logo} onChange={(event) => setLogoFile(event.target.files?.[0] || null)} className="w-full" />
+            <label className="group flex cursor-pointer items-center gap-4 rounded-[20px] border border-dashed border-sky-300 bg-sky-50/60 p-4 text-sm text-slate-700 transition hover:border-[#0085fc] hover:bg-sky-50">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0085fc] text-white shadow-sm"><ImagePlus size={22} /></span>
+              <span className="min-w-0"><span className="block font-semibold text-slate-800">Logo de la empresa</span><span className="mt-1 block text-xs text-slate-500">Haz clic para cargar una imagen. Formatos: PNG, JPG o WEBP.</span><span className="mt-2 block truncate text-xs font-semibold text-[#0075a1]">{logoFile?.name || (draft.logo ? 'Logo actual disponible' : 'Ningún archivo seleccionado')}</span></span>
+              <input type="file" accept="image/*" required={!editing && !logoFile && !draft.logo} onChange={(event) => setLogoFile(event.target.files?.[0] || null)} className="sr-only" />
             </label>
             <Field label="Descripción" value={draft.description} change={(value) => setDraft({ ...draft, description: value })} required placeholder="Describe la oportunidad, requisitos y lo que hace especial a la empresa." description="Esta información ayuda a que los estudiantes entiendan mejor la vacante." textarea />
           </div>
@@ -190,7 +188,6 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
               <Field label="Cupos ocupados" type="number" value={String(draft.filled)} change={(value) => setDraft({ ...draft, filled: Number(value) })} required />
             </div>
             <div className="space-y-3 rounded-[22px] border border-slate-200 bg-white p-5">
-              <label className="flex items-center gap-3 rounded-[16px] bg-slate-50 px-3 py-3 text-sm text-slate-700"><input type="checkbox" checked={draft.immediateAcceptance} onChange={(event) => setDraft({ ...draft, immediateAcceptance: event.target.checked })} className="h-4 w-4 rounded border-slate-300 text-[#223b87] focus:ring-[#223b87]" />Aceptación inmediata</label>
               <label className="flex items-center gap-3 rounded-[16px] bg-slate-50 px-3 py-3 text-sm text-slate-700"><input type="checkbox" checked={draft.visible} onChange={(event) => setDraft({ ...draft, visible: event.target.checked })} className="h-4 w-4 rounded border-slate-300 text-[#223b87] focus:ring-[#223b87]" />Mostrar en la web</label>
             </div>
           </div>
