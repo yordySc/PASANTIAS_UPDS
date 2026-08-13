@@ -78,7 +78,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     const normalizedEmail = email.trim().toLowerCase()
-
     if (isSupabaseConfigured) {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
@@ -93,11 +92,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return admin
     }
 
-    if (adminEmail && adminPassword && normalizedEmail === adminEmail && password === adminPassword) {
-      setSession(createLocalSession(email))
-      setIsAdmin(true)
-      setLoading(false)
-      return true
+    // Development fallback when Supabase is not configured.
+    // If explicit admin env vars are provided, require them.
+    if (adminEmail && adminPassword) {
+      if (normalizedEmail === adminEmail && password === adminPassword) {
+        setSession(createLocalSession(email))
+        setIsAdmin(true)
+        setLoading(false)
+        return true
+      }
+      setSession(null)
+      setIsAdmin(false)
+      return false
+    }
+
+    // If no admin env vars are set, allow local development access when on localhost.
+    if (typeof window !== 'undefined') {
+      const host = window.location.hostname
+      if (host === 'localhost' || host === '127.0.0.1') {
+        setSession(createLocalSession(email))
+        setIsAdmin(true)
+        setLoading(false)
+        return true
+      }
     }
 
     setSession(null)

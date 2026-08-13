@@ -68,11 +68,44 @@ export async function saveSuccessStory(story: Omit<SuccessStory, 'id'>): Promise
   return nextStory
 }
 
+export async function updateSuccessStory(id: string, story: Partial<Omit<SuccessStory, 'id'>>): Promise<SuccessStory> {
+  if (isSupabaseConfigured) {
+    const { data, error } = await supabase.from('success_stories').update({ title: story.title, description: story.description, institution: story.institution, highlight: story.highlight, accent: story.accent, video_url: story.videoUrl || null }).eq('id', id).select('id, title, description, institution, highlight, accent, video_url').single()
+    if (error) throw error
+    return { ...data, videoUrl: data.video_url || undefined } as SuccessStory
+  }
+  const current = await getSuccessStories()
+  const updated = current.map((s) => s.id === id ? { ...s, ...story } as SuccessStory : s)
+  if (typeof window !== 'undefined') window.localStorage.setItem(SUCCESS_STORIES_KEY, JSON.stringify(updated))
+  const found = updated.find((s) => s.id === id)
+  if (!found) throw new Error('Caso no encontrado')
+  return found
+}
+
 export async function deleteSuccessStory(id: string): Promise<void> {
   if (isSupabaseConfigured) {
-    const { error } = await supabase.from('success_stories').delete().eq('id', id)
-    if (error) throw error
-    return
+    // attempt to remove associated video file (if any) then delete row
+    try {
+      const { data: existing, error: fetchErr } = await supabase.from('success_stories').select('video_url').eq('id', id).single()
+      if (fetchErr) throw fetchErr
+      const videoUrl = existing?.video_url as string | undefined
+      if (videoUrl) {
+        // try to derive path (filename) from public URL
+        const parts = videoUrl.split('/')
+        const filename = parts[parts.length - 1]
+        try {
+          const { error: rmErr } = await supabase.storage.from('success-story-videos').remove([filename])
+          if (rmErr) console.warn('No se pudo eliminar el archivo de storage:', rmErr.message)
+        } catch (e) {
+          console.warn('Error al eliminar archivo de storage', e)
+        }
+      }
+      const { error } = await supabase.from('success_stories').delete().eq('id', id)
+      if (error) throw error
+      return
+    } catch (err) {
+      throw err
+    }
   }
   const current = await getSuccessStories()
   const updated = current.filter((story) => story.id !== id)
@@ -132,5 +165,6 @@ export async function uploadSuccessStoryVideo(file: File) {
   const path = `${crypto.randomUUID()}.${extension}`
   const { error } = await supabase.storage.from('success-story-videos').upload(path, file, { contentType: file.type })
   if (error) throw error
-  return supabase.storage.from('success-story-videos').getPublicUrl(path).data.publicUrl
+  const publicUrl = supabase.storage.from('success-story-videos').getPublicUrl(path).data.publicUrl
+  return { publicUrl, path }
 }

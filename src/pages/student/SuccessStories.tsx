@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ChevronLeft } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { isSupabaseConfigured, supabase } from '../../lib/supabase'
 import type { SuccessStory } from '../../types'
 import upds3D from '../../assets/UPDS_3D.png'
 import PageFooter from '../../components/guide/PageFooter'
@@ -10,6 +12,47 @@ interface SuccessStoriesProps {
 }
 
 function SuccessStories({ stories }: SuccessStoriesProps) {
+  const [failedVideos, setFailedVideos] = useState<Record<string, boolean>>({})
+  function VideoPlayer({ story }: { story: SuccessStory }) {
+    const [src, setSrc] = useState<string | null>(null)
+    const [triedSigned, setTriedSigned] = useState(false)
+
+    useEffect(() => {
+      let mounted = true
+      const init = async () => {
+        if (!story.videoUrl) return
+        // prefer signed URL when Supabase is configured (handles private buckets)
+        if (isSupabaseConfigured) {
+          try {
+            const parts = story.videoUrl.split('/')
+            const filename = parts[parts.length - 1]
+            const { data, error } = await supabase.storage.from('success-story-videos').createSignedUrl(filename, 60 * 60)
+            if (error) throw error
+            const signed = (data as any)?.signedUrl || (data as any)?.signedURL
+            if (signed && mounted) {
+              setSrc(signed)
+              return
+            }
+          } catch (e) {
+            // fallback to original URL
+            console.warn('No se pudo obtener signed URL:', e)
+          } finally {
+            setTriedSigned(true)
+          }
+        }
+        if (mounted) setSrc(story.videoUrl)
+      }
+      void init()
+      return () => { mounted = false }
+    }, [story.videoUrl])
+
+    if (!src) return <div className="h-[180px] w-full animate-pulse rounded-2xl bg-slate-800" />
+    return (
+      <video controls preload="metadata" crossOrigin="anonymous" className="block aspect-video w-full" src={src} onError={() => setFailedVideos((s) => ({ ...s, [story.id]: true }))}>
+        Tu navegador no admite la reproducción de video.
+      </video>
+    )
+  }
   return (
     <>
       <main className="mx-auto max-w-7xl px-5 py-6 sm:px-6 sm:py-12">
@@ -56,9 +99,13 @@ function SuccessStories({ stories }: SuccessStoriesProps) {
                   <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">{story.description}</p>
                   {story.videoUrl && (
                     <div className="mt-6 overflow-hidden rounded-2xl border border-[#008ec4]/20 bg-slate-950">
-                      <video controls preload="metadata" className="block aspect-video w-full" src={story.videoUrl}>
-                        Tu navegador no admite la reproducción de video.
-                      </video>
+                      {!failedVideos[story.id] ? (
+                        <VideoPlayer story={story} />
+                      ) : (
+                        <div className="p-4 text-sm text-slate-200">
+                          No se pudo cargar el video públicamente. <a className="font-semibold text-[#008ec4]" href={story.videoUrl} target="_blank" rel="noreferrer">Abrir en nueva pestaña</a>
+                        </div>
+                      )}
                     </div>
                   )}
                   <div className="mt-7 grid grid-cols-2 border-t border-[#008ec4]/15 pt-5">
