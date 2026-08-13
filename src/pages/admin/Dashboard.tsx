@@ -20,6 +20,7 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
 
   const [stories, setStories] = useState<SuccessStory[]>([])
   const [storyDraft, setStoryDraft] = useState<Omit<SuccessStory, 'id'>>({ title: '', description: '', institution: '', highlight: '', accent: 'blue', videoUrl: '' })
+  const [showResultField, setShowResultField] = useState(false)
   const [storyVideoFile, setStoryVideoFile] = useState<File | null>(null)
   const [loadingStories, setLoadingStories] = useState(false)
 
@@ -142,23 +143,20 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
           <h3 className="text-xl font-semibold text-slate-900">Casos de éxito</h3>
           <p className="mt-2 text-sm text-slate-600">Añade experiencias que se mostrarán en la página pública.</p>
           <form onSubmit={handleSaveStory} className="mt-4 space-y-4 rounded-2xl bg-slate-50 p-4">
-            <div className="flex items-center gap-3 border-b border-slate-200 pb-3"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#223b87] text-white"><FileText size={17} /></span><div><p className="text-sm font-semibold text-slate-800">Contenido del caso</p><p className="text-xs text-slate-500">Completa los datos que verán los estudiantes.</p></div></div>
-            <input value={storyDraft.title} onChange={(e) => setStoryDraft({ ...storyDraft, title: e.target.value })} placeholder="Título" className="w-full rounded-[12px] border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
-            <input value={storyDraft.institution} onChange={(e) => setStoryDraft({ ...storyDraft, institution: e.target.value })} placeholder="Institución" className="w-full rounded-[12px] border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
-            <input value={storyDraft.highlight} onChange={(e) => setStoryDraft({ ...storyDraft, highlight: e.target.value })} placeholder="Resaltado breve" className="w-full rounded-[12px] border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
-            <textarea value={storyDraft.description} onChange={(e) => setStoryDraft({ ...storyDraft, description: e.target.value })} rows={3} placeholder="Descripción" className="w-full rounded-[12px] border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
-            <label className="block"><span className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500"><LinkIcon size={14} /> URL de video</span><input value={storyDraft.videoUrl || ''} onChange={(e) => setStoryDraft({ ...storyDraft, videoUrl: e.target.value })} placeholder="URL pública del video (opcional)" type="url" className="w-full rounded-[12px] border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#0085fc]" /></label>
-            <label className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-[#0085fc]/50 bg-blue-50 px-4 py-4 text-sm text-slate-700 transition hover:bg-blue-100"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0085fc] text-white"><UploadCloud size={19} /></span><span><span className="flex items-center gap-2 font-semibold text-slate-800"><Video size={16} /> Cargar video</span><span className="mt-1 block text-xs text-slate-500">MP4 o WebM. {storyVideoFile?.name || 'Selecciona un archivo desde tu equipo.'}</span></span>
-              <input type="file" accept="video/*" onChange={(e) => setStoryVideoFile(e.target.files?.[0] || null)} className="sr-only" />
-            </label>
+            <div className="flex items-center gap-3 border-b border-slate-200 pb-3"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#223b87] text-white"><FileText size={17} /></span><div><p className="text-sm font-semibold text-slate-800">Contenido del caso</p><p className="text-xs text-slate-500">Completa los datos que verán los estudiantes. <strong className="text-[#223b87]">Nota:</strong> la carga de video requiere que Supabase esté configurado (tabla y storage). Si no lo está, solo se guardará el texto.</p></div></div>
+            <input value={storyDraft.title} onChange={(e) => setStoryDraft({ ...storyDraft, title: e.target.value })} placeholder="Título" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
+            <input value={storyDraft.institution} onChange={(e) => setStoryDraft({ ...storyDraft, institution: e.target.value })} placeholder="Empresa / institución (donde se realizó la pasantía)" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
             <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-slate-700">Color</label>
-              <select value={storyDraft.accent} onChange={(e) => setStoryDraft({ ...storyDraft, accent: e.target.value as SuccessStory['accent'] })} className="rounded-[12px] border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#0085fc]">
-                <option value="blue">Azul</option>
-                <option value="emerald">Verde</option>
-                <option value="amber">Ámbar</option>
-              </select>
+              <input id="showResult" type="checkbox" checked={showResultField} onChange={(e) => setShowResultField(e.target.checked)} className="h-4 w-4 rounded border-slate-300 text-[#223b87]" />
+              <label htmlFor="showResult" className="text-sm text-slate-700">Agregar campo "Resultado" (opcional)</label>
             </div>
+            {showResultField && (
+              <input value={storyDraft.highlight} onChange={(e) => setStoryDraft({ ...storyDraft, highlight: e.target.value })} placeholder="Resultado (ej. Desarrollo profesional, Contratación parcial)" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
+            )}
+            <textarea value={storyDraft.description} onChange={(e) => setStoryDraft({ ...storyDraft, description: e.target.value })} rows={3} placeholder="Descripción" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
+            <label className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-[#0085fc]/50 bg-[#f3f8ff] px-4 py-4 text-sm text-slate-700 transition hover:bg-[#e8f4ff]"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0085fc] text-white"><UploadCloud size={19} /></span><span><span className="flex items-center gap-2 font-semibold text-slate-800"><Video size={16} /> Cargar video</span><span className="mt-1 block text-xs text-slate-600">MP4 o WebM. {storyVideoFile?.name || (isSupabaseConfigured ? 'Selecciona un archivo desde tu equipo.' : 'Requiere Supabase configurado para subir videos.')}</span></span>
+              <input type="file" accept="video/*" onChange={(e) => setStoryVideoFile(e.target.files?.[0] || null)} className="sr-only" disabled={!isSupabaseConfigured} />
+            </label>
             <div className="flex gap-3"><button type="submit" className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white">Agregar caso</button></div>
           </form>
 

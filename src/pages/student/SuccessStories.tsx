@@ -41,7 +41,7 @@ function SuccessStories({ stories }: SuccessStoriesProps) {
                 transition={{ delay: index * 0.1, duration: 0.45 }}
                 whileHover={{ y: -7 }}
                 whileTap={{ scale: 0.99 }}
-                className="group relative isolate overflow-hidden border border-slate-200 bg-white p-6 shadow-[0_16px_36px_-30px_rgba(15,23,42,0.5)] transition-all duration-300 hover:border-[#008ec4]/45 hover:shadow-[0_24px_48px_-28px_rgba(0,142,196,0.32)] sm:p-8"
+                className="group relative isolate overflow-hidden border border-[#cfe8ff] bg-[#f3f8ff] p-6 shadow-[0_16px_36px_-30px_rgba(15,23,42,0.5)] transition-all duration-300 hover:border-[#008ec4]/45 hover:shadow-[0_24px_48px_-28px_rgba(0,142,196,0.32)] sm:p-8"
                 >
                 <div className="mb-8 flex items-center justify-between">
                   <span className="flex h-11 min-w-11 items-center justify-center bg-[#06334a] px-3 text-xs font-black tracking-[0.14em] text-white [clip-path:polygon(0_0,100%_0,82%_100%,0_100%)]">UPDS</span>
