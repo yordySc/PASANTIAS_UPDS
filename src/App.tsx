@@ -9,6 +9,7 @@ import Login from './pages/admin/Login'
 import Dashboard from './pages/admin/Dashboard'
 import Manage from './pages/admin/Manage'
 import AdminOnlyRoute from './auth/AdminOnlyRoute'
+import ScrollToTop from './components/ScrollToTop'
 import { getOffers, getSuccessStories } from './services/internships'
 import type { CompanyOffer, SuccessStory } from './types'
 
@@ -43,6 +44,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Navigate to="/guide" replace />} />
         <Route path="/guide" element={<Guide />} />
@@ -54,7 +56,7 @@ function App() {
         <Route element={<AdminOnlyRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard offers={offers} />} />
+            <Route path="dashboard" element={<Dashboard offers={offers} refreshSuccessStories={refreshSuccessStories} />} />
             <Route path="manage" element={<Manage offers={offers} setOffers={setOffers} refreshOffers={refreshOffers} />} />
           </Route>
         </Route>

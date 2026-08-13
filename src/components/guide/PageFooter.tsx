@@ -10,7 +10,7 @@ function PageFooter() {
         <div className="grid gap-8 md:grid-cols-3 items-start">
           <div className="space-y-4">
             <img src={logoUPDS} alt="UPDS" className="h-12 w-auto" />
-            <p className="text-sm text-slate-700">Universidad Privada Domingo Savio — Guía oficial de pasantías.</p>
+            <p className="text-sm text-slate-700">Universidad Privada Domingo Savio — Guía oficial de Prácticas Profesionales.</p>
             <div className="flex items-start gap-3 text-sm text-slate-600">
               <MapPin size={16} className="mt-0.5 shrink-0" />
               <span>B/ German Busch esquina Fabián Ruiz, Ciudad Tarija, Bolivia</span>

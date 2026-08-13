@@ -28,7 +28,7 @@ function Login() {
       <div className="w-full max-w-md rounded-[30px] bg-white p-8 shadow-lg">
         <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#0085fc]">Acceso administrador</p>
         <h2 className="mt-3 text-3xl font-semibold text-slate-900">Ingresar al panel</h2>
-        <p className="mt-3 text-sm leading-6 text-slate-600">Use únicamente las credenciales asignadas a la administración de pasantías.</p>
+        <p className="mt-3 text-sm leading-6 text-slate-600">Use únicamente las credenciales asignadas a la administración de Prácticas Profesionales.</p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           <div>

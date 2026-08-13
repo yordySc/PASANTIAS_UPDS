@@ -49,7 +49,7 @@ create table if not exists public.company_careers (
 create table if not exists public.internship_offers (
   id uuid primary key default gen_random_uuid(),
   company_id uuid not null references public.companies(id) on delete cascade,
-  offer_type text not null default 'Pasantía vigente',
+  offer_type text not null default 'Solicitud activa',
   total_slots integer not null check (total_slots > 0),
   occupied_slots integer not null default 0 check (occupied_slots >= 0 and occupied_slots <= total_slots),
   closes_at date not null,
@@ -74,6 +74,30 @@ create table if not exists public.resources (
   file_url text not null,
   is_restricted boolean default true
 );
+
+create table if not exists public.success_stories (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text not null,
+  institution text not null,
+  highlight text not null,
+  accent text not null default 'blue',
+  video_url text,
+  created_at timestamptz not null default now()
+);
+
+insert into storage.buckets (id, name, public)
+values ('success-story-videos', 'success-story-videos', true)
+on conflict (id) do nothing;
+
+create policy "Lectura pública de videos de casos"
+on storage.objects for select
+using (bucket_id = 'success-story-videos');
+
+create policy "Administradores cargan videos de casos"
+on storage.objects for insert
+to authenticated
+with check (bucket_id = 'success-story-videos');
 
 -- 4. FUNCIONES Y TRIGGERS
 create or replace function public.is_admin()

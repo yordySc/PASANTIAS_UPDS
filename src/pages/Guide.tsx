@@ -72,7 +72,7 @@ function Guide() {
                 className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/20 px-5 py-2 text-sm font-semibold uppercase tracking-[4px] text-white backdrop-blur-xl shadow-lg animate-glow"
               >
                 <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse"/>
-                Guía Oficial de Pasantías UPDS
+                Guía Oficial de Prácticas Profesionales UPDS
               </motion.div>
               
               <motion.h1 
@@ -87,7 +87,7 @@ function Guide() {
                   animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
                   transition={{ repeat: Infinity, duration: 8 }}
                 >
-                  Encuentra tu pasantía ideal
+                  Encuentra tus Prácticas Profesionales ideales
                 </motion.span>
                 <br className="hidden sm:block" /> y comienza desde ahora
               </motion.h1>
@@ -98,7 +98,7 @@ function Guide() {
                 transition={{ delay: 0.4, duration: 0.8 }}
                 className="mx-auto lg:mx-0 max-w-lg text-base sm:text-lg text-sky-100"
               >
-                Esta guía te acompañará en cada paso: desde la búsqueda hasta el éxito profesional en tu pasantía.
+                Esta guía te acompañará en cada paso: desde la búsqueda hasta el éxito profesional en tus Prácticas Profesionales.
               </motion.p>
 
               <motion.div 
@@ -153,18 +153,18 @@ function Guide() {
         </div>
       </section>
 
-      {/* Información Pasantías */}
+              {/* Información de Prácticas Profesionales */}
       <section id="informacion" className="px-5 py-20 sm:py-28 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 mb-6">
                 <span className="h-2 w-2 rounded-full bg-[#0085fc] animate-pulse"></span>
-                <p className="text-xs font-bold uppercase tracking-widest text-[#0085fc]">¿Qué es una pasantía?</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-[#0085fc]">¿Qué son las Prácticas Profesionales?</p>
               </div>
               <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl mb-6">Una oportunidad real para <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#223b87] to-[#0085fc]">aprender y crecer</span></h2>
               <p className="text-lg leading-relaxed text-slate-600 mb-8">
-                Una pasantía es más que un requisito académico. Es una inmersión directa en una empresa real donde aplicarás todo lo que aprendes en el aula de la UPDS.
+                Las Prácticas Profesionales son más que un requisito académico. Son una inmersión directa en una empresa real donde aplicarás todo lo que aprendes en el aula de la UPDS.
               </p>
               <Link to="/student" className="inline-flex items-center gap-2 text-[#0085fc] font-semibold hover:text-[#223b87] transition group">
                 Ver empresas disponibles <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -206,7 +206,7 @@ function Guide() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-14 max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-widest text-[#0085fc]">Consejos Prácticos</p>
-            <h2 className="mt-4 text-4xl font-bold text-slate-900">Claves para tener éxito en tu pasantía</h2>
+            <h2 className="mt-4 text-4xl font-bold text-slate-900">Claves para tener éxito en tus Prácticas Profesionales</h2>
           </div>
           <div className="relative mx-auto max-w-4xl space-y-3">
             <div className="absolute bottom-9 left-5 top-9 w-px bg-gradient-to-b from-[#2596be]/10 via-[#2596be]/50 to-[#2596be]/10 sm:left-8" />
@@ -257,9 +257,9 @@ function Guide() {
           <h2 className="text-3xl font-bold text-center mb-12">Preguntas Frecuentes</h2>
           <div className="space-y-4">
             {[
-              { title: '¿Cómo me postulo?', text: 'Explora el catálogo, elige una oportunidad y acércate a pasantias.' },
+              { title: '¿Cómo me postulo?', text: 'Explora el catálogo, elige una oportunidad y presenta tu carta de compromiso.' },
               { title: '¿Qué debo llevar?', text: 'Tu CV, una fotocopia de tu carnet de identidad y una actitud proactiva.' },
-              { title: '¿Cuánto dura una pasantía?', text: 'Se tiene que cumplir un total de 170 horas.' }
+              { title: '¿Cuánto duran las Prácticas Profesionales?', text: 'Se tiene que cumplir un total de 170 horas.' }
             ].map((faq, index) => (
               <motion.div
                 key={faq.title}
@@ -287,7 +287,7 @@ function Guide() {
             <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-25 [background-image:radial-gradient(rgba(255,255,255,0.55)_1px,transparent_1px)] [background-size:16px_16px]" />
             <img src={graduado} alt="" aria-hidden="true" className="pointer-events-none absolute -bottom-3 -right-5 z-0 w-64 opacity-65 sm:w-80 lg:w-96" />
             <div className="relative z-10 max-w-xl">
-              <p className="mb-6 text-[10px] font-black uppercase tracking-[0.28em] text-cyan-100">UPDS · Pasantías</p>
+              <p className="mb-6 text-[10px] font-black uppercase tracking-[0.28em] text-cyan-100">UPDS · Prácticas Profesionales</p>
               <h2 className="text-3xl font-bold sm:text-4xl">¿Listo para dar el siguiente paso?</h2>
               <p className="mt-3 text-sm text-blue-50 sm:text-base">Explora las empresas disponibles y descubre la oportunidad que mejor se adapta a ti.</p>
               <Link to="/student" className="mt-8 inline-flex items-center rounded-lg bg-white/95 px-5 py-3 text-sm font-bold text-blue-700 transition hover:-translate-y-1 hover:bg-white hover:shadow-lg">Ver empresas</Link>
@@ -301,7 +301,7 @@ function Guide() {
           <div className="grid gap-8 md:grid-cols-3 items-start">
             <div className="space-y-4">
               <img src={logoUPDS} alt="UPDS" className="h-12 w-auto" />
-              <p className="text-sm text-slate-700">Universidad Privada Domingo Savio — Guía oficial de pasantías.</p>
+              <p className="text-sm text-slate-700">Universidad Privada Domingo Savio — Guía oficial de Prácticas Profesionales.</p>
               <div className="flex items-center gap-3 text-sm text-slate-600">
                 <MapPin size={16} /> <span>B/ German Busch esquina Fabián Ruiz , Ciudad Tarija, Bolivia</span>
               </div>

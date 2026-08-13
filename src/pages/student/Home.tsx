@@ -57,10 +57,11 @@ function Home({ offers }: HomeProps) {
       return 0
     })
 
+    const isConvenio = (offer: CompanyOffer) => offer.type.toLowerCase().includes('convenio')
     return {
-      urgentes: sorted.filter(o => isActive(o) && o.immediateAcceptance),
-      directas: sorted.filter(o => isActive(o) && !o.immediateAcceptance),
-      convenios: sorted.filter(o => !isActive(o))
+      urgentes: [],
+      directas: sorted.filter((offer) => !isConvenio(offer) && isActive(offer)),
+      convenios: sorted.filter((offer) => isConvenio(offer) && offer.visible)
     }
   }, [offers, searchTerm, selectedCareer])
 
@@ -106,7 +107,7 @@ function Home({ offers }: HomeProps) {
             {/* Título principal con degradado */}
             <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
               Explora e infórmate sobre tus <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500">Pasantías</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500">Prácticas Profesionales</span>
             </motion.h1>
 
             {/* Subtítulo */}
@@ -148,11 +149,10 @@ function Home({ offers }: HomeProps) {
                 </div>
               </div>
 
-              <div className="mt-8 grid gap-4 md:grid-cols-3">
+              <div className="mt-8 grid gap-4 md:grid-cols-2">
                 {[
-                  { title: 'Solicitudes Urgentes', text: 'Empresas que requieren pasantes de inmediato. ¡Postúlate cuanto antes!', accent: 'from-rose-400 to-orange-400', icon: Zap, badge: 'Urgente' },
-                  { title: 'Solicitudes Directas', text: 'Empresas activas con procesos de selección vigentes.', accent: 'from-sky-400 to-cyan-400', icon: Building2, badge: 'Activa' },
-                  { title: 'Convenios Generales', text: 'Convenios activos donde puedes probar suerte presentando tu carta.', accent: 'from-emerald-400 to-lime-400', icon: AlertCircle, badge: 'Flexible' }
+                  { title: 'Solicitudes activas', text: 'Empresas que solicitan estudiantes para Prácticas Profesionales.', accent: 'from-sky-400 to-cyan-400', icon: Building2, badge: 'Activa' },
+                  { title: 'Empresas con convenio', text: 'Presenta tu carta de compromiso y la institución evaluará tu postulación.', accent: 'from-emerald-400 to-lime-400', icon: AlertCircle, badge: 'Convenio' }
                 ].map((item, index) => {
                   const Icon = item.icon
                   return (
@@ -213,7 +213,7 @@ function Home({ offers }: HomeProps) {
           <div className="min-w-0 space-y-16">
             {offers.length === 0 ? (
               <div className="rounded-[24px] border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
-                <h3 className="text-xl font-semibold text-slate-900">Aún no hay pasantías publicadas</h3>
+                <h3 className="text-xl font-semibold text-slate-900">Aún no hay Prácticas Profesionales publicadas</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-600">Cuando el administrador registre ofertas desde el panel, aparecerán aquí automáticamente.</p>
               </div>
             ) : null}
@@ -244,7 +244,7 @@ function Home({ offers }: HomeProps) {
                   <Building2 size={20} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold tracking-tight text-slate-900">Solicitudes Directas</h3>
+                  <h3 className="text-2xl font-bold tracking-tight text-slate-900">Solicitudes activas</h3>
                   <p className="text-sm text-slate-500">Procesos activos con selección vigente.</p>
                 </div>
               </div>
@@ -264,7 +264,7 @@ function Home({ offers }: HomeProps) {
                     <AlertCircle size={20} />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold tracking-tight text-slate-900">Convenios Generales</h3>
+                    <h3 className="text-2xl font-bold tracking-tight text-slate-900">Empresas con convenio</h3>
                     <p className="text-sm text-slate-500">Opciones con procesos más flexibles.</p>
                   </div>
                 </div>

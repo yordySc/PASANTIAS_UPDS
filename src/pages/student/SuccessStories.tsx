@@ -20,10 +20,10 @@ function SuccessStories({ stories }: SuccessStoriesProps) {
         <section className="relative overflow-hidden border border-[#008ec4]/35 bg-[#06334a] px-6 py-10 text-white shadow-[0_24px_70px_-28px_rgba(6,51,74,0.8)] sm:px-10 sm:py-14">
           <img src={upds3D} alt="" aria-hidden="true" className="pointer-events-none absolute -bottom-6 -right-16 hidden w-[25rem] opacity-60 sm:block lg:-right-8 lg:w-[30rem]" />
           <div className="relative z-10 max-w-3xl">
-            <p className="mb-5 text-[10px] font-black uppercase tracking-[0.3em] text-cyan-200">Pasantias UPDS · Historias reales</p>
+            <p className="mb-5 text-[10px] font-black uppercase tracking-[0.3em] text-cyan-200">Prácticas Profesionales UPDS · Historias reales</p>
             <h1 className="max-w-2xl text-4xl font-extrabold tracking-tight text-white sm:text-6xl">Historias de éxito</h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-blue-50/80 sm:text-lg sm:leading-8">
-              Estas experiencias muestran cómo una pasantía puede abrir puertas reales hacia el mundo profesional.
+              Estas experiencias muestran cómo las Prácticas Profesionales pueden abrir puertas reales hacia el mundo profesional.
             </p>
           </div>
         </section>
@@ -54,6 +54,13 @@ function SuccessStories({ stories }: SuccessStoriesProps) {
                   </div>
                   <h2 className="mt-4 max-w-3xl text-2xl font-bold tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-[#008ec4] sm:text-4xl">{story.title}</h2>
                   <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">{story.description}</p>
+                  {story.videoUrl && (
+                    <div className="mt-6 overflow-hidden rounded-2xl border border-[#008ec4]/20 bg-slate-950">
+                      <video controls preload="metadata" className="block aspect-video w-full" src={story.videoUrl}>
+                        Tu navegador no admite la reproducción de video.
+                      </video>
+                    </div>
+                  )}
                   <div className="mt-7 grid grid-cols-2 border-t border-[#008ec4]/15 pt-5">
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Empresa / institución</p>

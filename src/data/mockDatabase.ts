@@ -24,7 +24,7 @@ export const mockOffers: CompanyOffer[] = [
     vacancies: 3,
     filled: 3,
     visible: true,
-    type: 'Pasantía vigente',
+    type: 'Solicitud activa',
     description: 'Espacio para fortalecer producción, edición y gestión de contenidos en entornos audiovisuales y digitales.',
     logo: 'RA',
     status: 'vigente',

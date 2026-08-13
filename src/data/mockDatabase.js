@@ -19,7 +19,7 @@ export const mockOffers = [
     vacancies: 3,
     filled: 3,
     visible: true,
-    type: 'Pasantía vigente',
+    type: 'Solicitud activa',
     description: 'Espacio ideal para estudiantes interesados en producción y gestión de contenidos.',
     logo: '📻',
   },

@@ -1,11 +1,11 @@
 import type { Career, CompanyOffer, SuccessStory } from '../types'
-import { supabase } from '../lib/supabase'
+import { isSupabaseConfigured, supabase } from '../lib/supabase'
 
 const SUCCESS_STORIES_KEY = 'upds-success-stories'
 const fallbackStories: SuccessStory[] = [
   {
     id: 'story-1',
-    title: 'De la pasantía a la primera oportunidad profesional',
+    title: 'De las Prácticas Profesionales a la primera oportunidad laboral',
     description: 'Una estudiante encontró su primer vínculo laboral después de completar una experiencia guiada por la universidad y el equipo de la empresa.',
     institution: 'UPDS',
     highlight: 'Primer empleo',
@@ -14,7 +14,7 @@ const fallbackStories: SuccessStory[] = [
   {
     id: 'story-2',
     title: 'Una experiencia que abrió nuevas puertas',
-    description: 'La pasantía permitió desarrollar habilidades reales y consolidar un proyecto que luego se convirtió en una oportunidad continua.',
+    description: 'Las Prácticas Profesionales permitieron desarrollar habilidades reales y consolidar un proyecto que luego se convirtió en una oportunidad continua.',
     institution: 'Empresa aliada',
     highlight: 'Desarrollo profesional',
     accent: 'emerald',
@@ -38,6 +38,10 @@ export async function getCareers(): Promise<Career[]> {
 }
 
 export async function getSuccessStories(): Promise<SuccessStory[]> {
+  if (isSupabaseConfigured) {
+    const { data, error } = await supabase.from('success_stories').select('id, title, description, institution, highlight, accent, video_url').order('created_at', { ascending: false })
+    if (!error && data) return data.map((story) => ({ ...story, videoUrl: story.video_url || undefined })) as SuccessStory[]
+  }
   if (typeof window === 'undefined') return fallbackStories
   try {
     const stored = window.localStorage.getItem(SUCCESS_STORIES_KEY)
@@ -50,6 +54,11 @@ export async function getSuccessStories(): Promise<SuccessStory[]> {
 }
 
 export async function saveSuccessStory(story: Omit<SuccessStory, 'id'>): Promise<SuccessStory> {
+  if (isSupabaseConfigured) {
+    const { data, error } = await supabase.from('success_stories').insert({ title: story.title, description: story.description, institution: story.institution, highlight: story.highlight, accent: story.accent, video_url: story.videoUrl || null }).select('id, title, description, institution, highlight, accent, video_url').single()
+    if (error) throw error
+    return { ...data, videoUrl: data.video_url || undefined } as SuccessStory
+  }
   const nextStory: SuccessStory = { ...story, id: crypto.randomUUID() }
   const current = await getSuccessStories()
   const updated = [nextStory, ...current]
@@ -60,6 +69,11 @@ export async function saveSuccessStory(story: Omit<SuccessStory, 'id'>): Promise
 }
 
 export async function deleteSuccessStory(id: string): Promise<void> {
+  if (isSupabaseConfigured) {
+    const { error } = await supabase.from('success_stories').delete().eq('id', id)
+    if (error) throw error
+    return
+  }
   const current = await getSuccessStories()
   const updated = current.filter((story) => story.id !== id)
   if (typeof window !== 'undefined') {
@@ -109,4 +123,14 @@ export async function uploadLogo(file: File) {
   const { error } = await supabase.storage.from('company-logos').upload(path, file)
   if (error) throw error
   return supabase.storage.from('company-logos').getPublicUrl(path).data.publicUrl
+}
+
+export async function uploadSuccessStoryVideo(file: File) {
+  if (!file.type.startsWith('video/')) throw new Error('Selecciona un archivo de video válido.')
+  if (!isSupabaseConfigured) throw new Error('Configura Supabase para cargar videos. También puedes usar una URL de video pública.')
+  const extension = file.name.split('.').pop() || 'mp4'
+  const path = `${crypto.randomUUID()}.${extension}`
+  const { error } = await supabase.storage.from('success-story-videos').upload(path, file, { contentType: file.type })
+  if (error) throw error
+  return supabase.storage.from('success-story-videos').getPublicUrl(path).data.publicUrl
 }

@@ -108,7 +108,7 @@ export default function Header() {
                                         )}
                                     </motion.div>
                                 ))}
-                                <p className="mt-auto pt-8 text-[10px] font-bold uppercase tracking-[0.24em] text-white/45">Pasantias · Universidad Privada Domingo Savio</p>
+                                <p className="mt-auto pt-8 text-[10px] font-bold uppercase tracking-[0.24em] text-white/45">Prácticas Profesionales · Universidad Privada Domingo Savio</p>
                             </div>
                         </motion.div>
                     </>

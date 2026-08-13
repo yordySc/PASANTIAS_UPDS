@@ -23,6 +23,7 @@ export interface SuccessStory {
   institution: string
   highlight: string
   accent: 'blue' | 'emerald' | 'amber'
+  videoUrl?: string
 }
 
 export interface DocumentItem {
