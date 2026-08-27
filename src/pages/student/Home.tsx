@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Search, GraduationCap, Building2, ChevronRight, AlertCircle, Zap, Info } from 'lucide-react'
+import { Search, GraduationCap, Building2, ChevronRight, ChevronDown, AlertCircle, Zap, Info } from 'lucide-react'
 import CompanyCard from '../../components/public/CompanyCard'
 import AnimatedBackground from '../../components/guide/AnimatedBackground'
 import Reveal from '../../components/guide/Reveal'
-import PageFooter from '../../components/guide/PageFooter'
 import type { CompanyOffer } from '../../types'
 import { getCareers } from '../../services/internships'
-import graduado from '../../assets/Graduado.png'
-import upds3D from '../../assets/UPDS_3D.png'
+import logoUPDS from '../../assets/logo-upds.png'
 
 interface HomeProps {
   offers: CompanyOffer[]
@@ -19,6 +17,7 @@ function Home({ offers }: HomeProps) {
   const [selectedCareer, setSelectedCareer] = useState<string>('Todas')
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [expandedCompanyId, setExpandedCompanyId] = useState<string | null>(null)
+  const [searchFocused, setSearchFocused] = useState(false)
 
   const [careers, setCareers] = useState<string[]>(['Todas'])
 
@@ -65,14 +64,22 @@ function Home({ offers }: HomeProps) {
     }
   }, [offers, searchTerm, selectedCareer])
 
+  const suggestions = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase()
+    if (!query) return []
+    return offers
+      .filter((offer) => [offer.institution, offer.address, ...offer.careers].some((value) => value.toLowerCase().includes(query)))
+      .slice(0, 6)
+  }, [offers, searchTerm])
+
   const scrollToSearch = () => {
     document.getElementById('directorio')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-transparent">
       {/* HERO SECTION RENOVADO */}
-      <section className="relative isolate flex min-h-[70vh] flex-col justify-center overflow-hidden bg-slate-900 px-5 py-16 sm:px-6 lg:py-28">
+      <section className="relative isolate flex min-h-[70vh] flex-col justify-center overflow-hidden bg-[#003366] px-5 py-16 sm:px-6 lg:py-28">
         <AnimatedBackground />
         
         {/* Fondo de cuadrícula con desvanecimiento */}
@@ -80,32 +87,32 @@ function Home({ offers }: HomeProps) {
         
         {/* Luces flotantes dinámicas */}
         <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute -top-20 left-10 h-72 w-72 rounded-full bg-cyan-500/20 blur-[80px]" />
-        <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-blue-600/20 blur-[100px]" />
+        <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-[#2967CD]/20 blur-[100px]" />
 
         {/* Modelo 3D: Ahora visible en móviles (pequeño/fondo) y destacado en PC */}
         <motion.img
-          src={upds3D}
-          alt="Logo UPDS 3D"
+          src={logoUPDS}
+          alt=""
           aria-hidden="true"
           initial={{ opacity: 0, scale: 0.8, y: 30 }}
           animate={{ opacity: 0.85, scale: 1, y: [0, -15, 0], rotate: [-2, 2, -2] }}
           transition={{ opacity: { duration: 0.8 }, scale: { duration: 0.8 }, y: { duration: 6, repeat: Infinity, ease: 'easeInOut' }, rotate: { duration: 7, repeat: Infinity, ease: 'easeInOut' } }}
-          className="pointer-events-none absolute -bottom-2 -right-16 z-0 w-72 opacity-20 sm:w-80 md:opacity-40 lg:bottom-0 lg:right-[5%] lg:w-[32rem] lg:opacity-90 xl:w-[38rem]"
+          className="pointer-events-none absolute bottom-4 right-4 z-0 h-36 w-auto max-w-[9rem] object-contain opacity-25 sm:right-8 sm:h-44 sm:max-w-[11rem] md:opacity-40 lg:bottom-8 lg:right-[8%] lg:h-56 lg:max-w-[14rem] lg:opacity-75"
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl text-center lg:text-left">
-          <div className="mx-auto max-w-3xl lg:mx-0">
+        <div className="relative z-10 mx-auto w-full max-w-7xl min-w-0 text-center lg:text-left">
+          <div className="mx-auto min-w-0 max-w-3xl lg:mx-0">
             {/* Etiqueta animada */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-cyan-300 backdrop-blur-md">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-500"></span>
               </span>
-              Directorio UPDS
+              Empresas y oportunidades
             </motion.div>
 
             {/* Título principal con degradado */}
-            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="max-w-full break-words text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
               Explora e infórmate sobre tus <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500">Prácticas Profesionales</span>
             </motion.h1>
@@ -117,7 +124,7 @@ function Home({ offers }: HomeProps) {
 
             {/* Nuevo Botón de Acción (Reemplaza los rectángulos) */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mt-10 flex justify-center lg:justify-start">
-              <button onClick={scrollToSearch} className="group flex items-center gap-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 text-sm font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] active:scale-95">
+              <button onClick={scrollToSearch} className="group flex items-center gap-3 rounded-full bg-gradient-to-r from-cyan-500 to-[#2967CD] px-8 py-4 text-sm font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] active:scale-95">
                 <Search size={18} className="transition-transform group-hover:-rotate-12" />
                 Buscar oportunidades
               </button>
@@ -131,18 +138,18 @@ function Home({ offers }: HomeProps) {
         
         {/* PANEL INFORMATIVO */}
         <Reveal>
-          <div className="relative overflow-hidden rounded-[36px] border border-slate-200/70 bg-gradient-to-br from-[#031d33] via-[#06334a] to-[#0b4f6c] p-6 text-white shadow-[0_30px_80px_-30px_rgba(2,22,38,0.85)] sm:p-8 lg:p-10">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.22),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.14),transparent_25%)]" />
-            <div className="absolute -left-10 top-8 h-28 w-28 rounded-full bg-cyan-400/15 blur-3xl" />
-            <div className="absolute -bottom-10 right-5 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl" />
+          <div className="relative overflow-hidden rounded-[36px] border border-cyan-200/25 bg-gradient-to-br from-[#003366] via-[#123f83] to-[#2967CD] p-6 text-white shadow-[0_30px_80px_-30px_rgba(2,22,38,0.85)] sm:p-8 lg:p-10">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(34,211,238,0.34),transparent_18%),radial-gradient(circle_at_88%_85%,rgba(255,255,255,0.16),transparent_24%),linear-gradient(115deg,transparent_0%,rgba(41,103,205,0.28)_58%,rgba(34,211,238,0.12)_100%)]" />
+            <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full border border-cyan-300/20 bg-cyan-300/10 blur-2xl" />
+            <div className="absolute -bottom-16 left-1/3 h-44 w-44 rounded-full bg-[#2967CD]/35 blur-3xl" />
             <div className="relative z-10">
               <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div className="max-w-2xl">
                   <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-100 backdrop-blur-sm">
                     <Info size={14} />
-                    Guía paso a paso
+                    <span className="text-sm font-extrabold tracking-[0.04em] sm:text-base">Guía paso a paso</span>
                   </div>
-                  <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">¿Cómo usar este directorio?</h2>
+                  <h2 className="mt-5 text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-6xl">¿Cómo usar este directorio?</h2>
                   <p className="mt-3 max-w-xl text-sm leading-7 text-blue-50/85 sm:text-base">
                     Elige la categoría según la urgencia del proceso y encuentra la oportunidad que mejor se adapta a tu perfil.
                   </p>
@@ -195,15 +202,33 @@ function Home({ offers }: HomeProps) {
         {/* BUSCADOR */}
         <Reveal>
           <div className="flex flex-col gap-6 rounded-[24px] border border-slate-200 bg-white p-8 shadow-sm md:flex-row">
-            <div className="flex flex-1 items-center rounded-2xl border border-slate-200 bg-slate-50 px-4 focus-within:ring-2 focus-within:ring-blue-500">
+            <div className="relative flex-1">
+              <div className="flex items-center rounded-2xl border border-slate-200 bg-slate-50 px-4 focus-within:ring-2 focus-within:ring-[#2967CD]">
               <Search className="mr-3 text-slate-400" size={20} />
-              <input type="text" placeholder="Buscar empresa o área..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full bg-transparent py-4 outline-none" />
+                <input type="text" placeholder="Buscar empresa o área..." value={searchTerm} onFocus={() => setSearchFocused(true)} onChange={(e) => setSearchTerm(e.target.value)} className="w-full bg-transparent py-4 outline-none" />
+              </div>
+              {searchFocused && suggestions.length > 0 && (
+                <div className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
+                  {suggestions.map((offer) => (
+                    <button key={offer.id} type="button" onMouseDown={() => { setSearchTerm(offer.institution); setSearchFocused(false) }} className="flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-blue-50">
+                      <Building2 size={18} className="mt-0.5 shrink-0 text-[#2967CD]" />
+                      <span><strong className="block text-sm text-[#003366]">{offer.institution}</strong><span className="text-xs text-slate-500">{offer.address}</span></span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="flex items-center rounded-2xl border border-slate-200 bg-slate-50 px-4 md:w-64">
-              <GraduationCap className="mr-3 text-slate-400" size={20} />
-              <select value={selectedCareer} onChange={(e) => setSelectedCareer(e.target.value)} className="w-full cursor-pointer bg-transparent py-4 outline-none">
-                {careers.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
+            <div className="group relative overflow-hidden rounded-2xl border border-[#2967CD]/25 bg-gradient-to-br from-[#f5faff] via-white to-[#e8f4ff] px-4 py-3 shadow-[0_10px_25px_rgba(0,51,102,0.08)] transition hover:border-[#22d3ee]/70 hover:shadow-[0_14px_30px_rgba(0,133,252,0.14)] md:w-72">
+              <div aria-hidden="true" className="pointer-events-none absolute -right-8 -top-10 h-24 w-24 rounded-full bg-cyan-300/20 blur-2xl transition group-hover:bg-cyan-300/35" />
+              <label htmlFor="career-filter" className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.18em] text-[#2967CD]">
+                <GraduationCap size={15} /> Filtrar por carrera
+              </label>
+              <div className="relative z-10 mt-1 flex items-center">
+                <select id="career-filter" value={selectedCareer} onChange={(e) => setSelectedCareer(e.target.value)} aria-label="Filtrar empresas por carrera" className="w-full cursor-pointer appearance-none bg-transparent pr-8 text-sm font-semibold text-[#003366] outline-none">
+                  {careers.map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
+                <ChevronDown aria-hidden="true" size={18} className="pointer-events-none absolute right-0 text-[#2967CD] transition-transform group-focus-within:rotate-180" />
+              </div>
             </div>
           </div>
         </Reveal>
@@ -213,7 +238,7 @@ function Home({ offers }: HomeProps) {
           <div className="min-w-0 space-y-16">
             {offers.length === 0 ? (
               <div className="rounded-[24px] border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
-                <h3 className="text-xl font-semibold text-slate-900">Aún no hay Prácticas Profesionales publicadas</h3>
+                <h3 className="text-xl font-semibold text-[#003366]">Aún no hay Prácticas Profesionales publicadas</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-600">Cuando el administrador registre ofertas desde el panel, aparecerán aquí automáticamente.</p>
               </div>
             ) : null}
@@ -224,7 +249,7 @@ function Home({ offers }: HomeProps) {
                     <Zap size={20} />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold tracking-tight text-slate-900">Solicitudes Urgentes</h3>
+                    <h3 className="text-2xl font-bold tracking-tight text-[#003366]">Solicitudes Urgentes</h3>
                     <p className="text-sm text-slate-500">Oportunidades que requieren respuesta inmediata.</p>
                   </div>
                 </div>
@@ -244,8 +269,8 @@ function Home({ offers }: HomeProps) {
                   <Building2 size={20} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold tracking-tight text-slate-900">Solicitudes activas</h3>
-                  <p className="text-sm text-slate-500">Procesos activos con selección vigente.</p>
+                  <h3 className="text-2xl font-extrabold tracking-tight text-white">Solicitudes activas</h3>
+                  <p className="text-sm text-blue-100">Procesos activos con selección vigente.</p>
                 </div>
               </div>
               <div className="space-y-6">
@@ -264,7 +289,7 @@ function Home({ offers }: HomeProps) {
                     <AlertCircle size={20} />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold tracking-tight text-slate-900">Empresas con convenio</h3>
+                    <h3 className="text-2xl font-bold tracking-tight text-[#003366]">Empresas con convenio</h3>
                     <p className="text-sm text-slate-500">Opciones con procesos más flexibles.</p>
                   </div>
                 </div>
@@ -280,20 +305,19 @@ function Home({ offers }: HomeProps) {
           </div>
 
           <aside className="min-w-0">
-            <div className="relative isolate overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0a347c] via-[#1457b8] to-[#008ec4] p-6 text-white shadow-2xl sm:p-8 lg:sticky lg:top-28">
+            <div className="relative isolate overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0a347c] via-[#1457b8] to-[#2967CD] p-6 text-white shadow-2xl sm:p-8 lg:sticky lg:top-28">
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-25 [background-image:radial-gradient(rgba(255,255,255,0.55)_1px,transparent_1px)] [background-size:16px_16px]" />
-              <img src={graduado} alt="" aria-hidden="true" className="pointer-events-none absolute -bottom-5 -right-3 z-0 w-52 opacity-40 sm:w-64 sm:opacity-65" />
+              <img src={logoUPDS} alt="" aria-hidden="true" className="pointer-events-none absolute bottom-3 right-3 z-0 h-28 w-auto max-w-[7rem] object-contain opacity-30 sm:h-36 sm:max-w-[9rem] sm:opacity-50" />
               <div className="relative z-10">
                 <p className="mb-8 text-[10px] font-black uppercase tracking-[0.28em] text-cyan-100">UPDS · Trayectorias</p>
-                <h3 className="mb-2 text-2xl font-bold">Casos de Éxito</h3>
-                <p className="mb-6 max-w-[13rem] text-sm text-blue-50">Historias de estudiantes que lograron su puesto ideal.</p>
-                <Link to="/student/success-stories" className="relative z-10 inline-flex max-w-full items-center rounded-lg bg-white/95 px-4 py-3 text-sm font-bold text-blue-700 transition hover:-translate-y-1 hover:bg-white hover:shadow-lg">Ver historias →</Link>
+                <h3 className="mb-2 text-2xl font-bold">Testimonios</h3>
+                <p className="mb-6 max-w-[13rem] text-sm text-blue-50">Experiencias de estudiantes que lograron su puesto ideal.</p>
+                <Link to="/student/success-stories" className="relative z-10 inline-flex max-w-full items-center rounded-lg bg-white/95 px-4 py-3 text-sm font-bold text-blue-700 transition hover:-translate-y-1 hover:bg-white hover:shadow-lg">Ver testimonios →</Link>
               </div>
             </div>
           </aside>
         </div>
       </main>
-      <PageFooter />
     </div>
   )
 }

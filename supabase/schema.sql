@@ -83,11 +83,18 @@ create table if not exists public.success_stories (
   highlight text not null,
   accent text not null default 'blue',
   video_url text,
+  background_url text,
   created_at timestamptz not null default now()
 );
 
+alter table public.success_stories add column if not exists background_url text;
+
 insert into storage.buckets (id, name, public)
 values ('success-story-videos', 'success-story-videos', true)
+on conflict (id) do nothing;
+
+insert into storage.buckets (id, name, public)
+values ('success-story-backgrounds', 'success-story-backgrounds', true)
 on conflict (id) do nothing;
 
 create policy "Lectura pública de videos de casos"
@@ -98,6 +105,15 @@ create policy "Administradores cargan videos de casos"
 on storage.objects for insert
 to authenticated
 with check (bucket_id = 'success-story-videos');
+
+create policy "Lectura pública de fondos de testimonios"
+on storage.objects for select
+using (bucket_id = 'success-story-backgrounds');
+
+create policy "Administradores cargan fondos de testimonios"
+on storage.objects for insert
+to authenticated
+with check (bucket_id = 'success-story-backgrounds');
 
 -- 4. FUNCIONES Y TRIGGERS
 create or replace function public.is_admin()

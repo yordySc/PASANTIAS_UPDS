@@ -24,6 +24,7 @@ export interface SuccessStory {
   highlight: string
   accent: 'blue' | 'emerald' | 'amber'
   videoUrl?: string
+  backgroundUrl?: string
 }
 
 export interface DocumentItem {

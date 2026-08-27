@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
-import { FileText, Link as LinkIcon, UploadCloud, Video } from 'lucide-react'
+import { FileText, Link as LinkIcon, UploadCloud, Video, ImagePlus } from 'lucide-react'
 import type { CompanyOffer, Career, SuccessStory } from '../../types'
-import { getCareers, addCareer, deleteCareer, getSuccessStories, saveSuccessStory, deleteSuccessStory, uploadSuccessStoryVideo, updateSuccessStory } from '../../services/internships'
+import { getCareers, addCareer, deleteCareer, getSuccessStories, saveSuccessStory, deleteSuccessStory, uploadSuccessStoryVideo, uploadSuccessStoryBackground, updateSuccessStory } from '../../services/internships'
 import { isSupabaseConfigured } from '../../lib/supabase'
 
 interface DashboardProps {
@@ -22,9 +22,12 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
   const [message, setMessage] = useState('')
 
   const [stories, setStories] = useState<SuccessStory[]>([])
-  const [storyDraft, setStoryDraft] = useState<Omit<SuccessStory, 'id'>>({ title: '', description: '', institution: '', highlight: '', accent: 'blue', videoUrl: '' })
+  const [storyDraft, setStoryDraft] = useState<Omit<SuccessStory, 'id'>>({ title: '', description: '', institution: '', highlight: '', accent: 'blue', videoUrl: '', backgroundUrl: '' })
   const [showResultField, setShowResultField] = useState(false)
   const [storyVideoFile, setStoryVideoFile] = useState<File | null>(null)
+  const [storyBackgroundFile, setStoryBackgroundFile] = useState<File | null>(null)
+  const [removeStoryVideo, setRemoveStoryVideo] = useState(false)
+  const [removeStoryBackground, setRemoveStoryBackground] = useState(false)
   const [loadingStories, setLoadingStories] = useState(false)
   const [editingStoryId, setEditingStoryId] = useState<string | null>(null)
   const [toast, setToast] = useState<{ message: string; kind?: 'info' | 'success' | 'error' } | null>(null)
@@ -107,6 +110,9 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
     setSaving(true)
     try {
       let videoUrl = storyDraft.videoUrl
+      let backgroundUrl = storyDraft.backgroundUrl
+      if (removeStoryVideo) videoUrl = ''
+      if (removeStoryBackground) backgroundUrl = ''
       if (storyVideoFile) {
         setIsUploading(true)
         setUploadProgress(3)
@@ -148,21 +154,27 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
           setIsUploading(false)
         }
       }
-      if (editingStoryId) {
-        const updated = await updateSuccessStory(editingStoryId, { ...storyDraft, videoUrl })
-        setStories((all) => all.map((s) => s.id === updated.id ? updated : s))
-        setToast({ message: 'Caso de éxito actualizado correctamente.', kind: 'success' })
-      } else {
-        const created = await saveSuccessStory({ ...storyDraft, videoUrl })
-        setStories((all) => [created, ...all])
-        setToast({ message: 'Caso de éxito agregado correctamente.', kind: 'success' })
+      if (storyBackgroundFile) {
+        backgroundUrl = await uploadSuccessStoryBackground(storyBackgroundFile)
       }
-      setStoryDraft({ title: '', description: '', institution: '', highlight: '', accent: 'blue', videoUrl: '' })
+      if (editingStoryId) {
+        const updated = await updateSuccessStory(editingStoryId, { ...storyDraft, videoUrl, backgroundUrl })
+        setStories((all) => all.map((s) => s.id === updated.id ? updated : s))
+        setToast({ message: 'Testimonio actualizado correctamente.', kind: 'success' })
+      } else {
+        const created = await saveSuccessStory({ ...storyDraft, videoUrl, backgroundUrl })
+        setStories((all) => [created, ...all])
+        setToast({ message: 'Testimonio agregado correctamente.', kind: 'success' })
+      }
+      setStoryDraft({ title: '', description: '', institution: '', highlight: '', accent: 'blue', videoUrl: '', backgroundUrl: '' })
       setStoryVideoFile(null)
+      setStoryBackgroundFile(null)
+      setRemoveStoryVideo(false)
+      setRemoveStoryBackground(false)
       setEditingStoryId(null)
       await refreshSuccessStories()
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'No se pudo guardar el caso de éxito.'
+      const msg = err instanceof Error ? err.message : 'No se pudo guardar el testimonio.'
       setToast({ message: msg, kind: 'error' })
     } finally {
       setSaving(false)
@@ -172,7 +184,7 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
   const handleDeleteStory = (id: string, title?: string) => {
     setConfirm({
       open: true,
-      title: 'Eliminar caso de éxito',
+      title: 'Eliminar testimonio',
       body: `¿Eliminar el caso "${title ?? ''}"? Esta acción no se puede deshacer.`,
       onConfirm: async () => {
         setConfirm({ open: false })
@@ -181,9 +193,9 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
           await deleteSuccessStory(id)
           setStories((all) => all.filter((s) => s.id !== id))
           await refreshSuccessStories()
-          setToast({ message: 'Caso de éxito eliminado.', kind: 'success' })
+          setToast({ message: 'Testimonio eliminado.', kind: 'success' })
         } catch (err) {
-          const msg = err instanceof Error ? err.message : 'No se pudo eliminar el caso de éxito.'
+          const msg = err instanceof Error ? err.message : 'No se pudo eliminar el testimonio.'
           console.error('deleteSuccessStory error', err)
           setToast({ message: msg, kind: 'error' })
         } finally {
@@ -195,38 +207,43 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
 
   const handleEditStory = (s: SuccessStory) => {
     setEditingStoryId(s.id)
-    setStoryDraft({ title: s.title, description: s.description, institution: s.institution || '', highlight: s.highlight || '', accent: s.accent || 'blue', videoUrl: s.videoUrl || '' })
+    setStoryDraft({ title: s.title, description: s.description, institution: s.institution || '', highlight: s.highlight || '', accent: s.accent || 'blue', videoUrl: s.videoUrl || '', backgroundUrl: s.backgroundUrl || '' })
+    setRemoveStoryVideo(false)
+    setRemoveStoryBackground(false)
     setShowResultField(Boolean(s.highlight))
     // avoid forcing a page scroll when editing; user can see the form at top
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#0085fc]">Resumen general</p>
-        <h2 className="text-3xl font-semibold text-slate-900">Consulta rápida de prácticas, cupos y carreras</h2>
-        <p className="max-w-2xl text-sm leading-7 text-slate-600">Esta sección está pensada para ver de forma simple y clara qué está activo, cuántos cupos siguen disponibles y qué carreras se están gestionando.</p>
+      <div className="relative overflow-hidden rounded-[26px] bg-gradient-to-br from-[#003366] via-[#1457b8] to-[#0891b2] p-6 text-white shadow-[0_20px_45px_-24px_rgba(0,51,102,0.65)] sm:p-8">
+        <div className="pointer-events-none absolute -right-10 -top-16 h-48 w-48 rounded-full bg-cyan-300/20 blur-3xl" />
+        <div className="relative z-10 flex flex-col gap-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-100">Resumen general</p>
+          <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Tu panel de prácticas</h2>
+          <p className="max-w-2xl text-sm leading-7 text-blue-50">Consulta rápidamente empresas, oportunidades, cupos y carreras. Desde aquí puedes mantener la información lista para los estudiantes.</p>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+        <div className="rounded-2xl border border-sky-200 bg-gradient-to-br from-sky-50 to-white p-5 shadow-sm">
           <p className="text-sm text-slate-500">Empresas registradas</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-900">{companiesCount}</p>
+          <p className="mt-3 text-3xl font-semibold text-[#003366]">{companiesCount}</p>
           <p className="mt-2 text-xs text-slate-500">Total de empresas con al menos una oferta registrada</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+        <div className="rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-white p-5 shadow-sm">
           <p className="text-sm text-slate-500">Ofertas activas</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-900">{visibleOffers.length}</p>
+          <p className="mt-3 text-3xl font-semibold text-[#003366]">{visibleOffers.length}</p>
           <p className="mt-2 text-xs text-slate-500">Ofertas visibles para estudiantes</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+        <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
           <p className="text-sm text-slate-500">Cupos abiertos</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-900">{openVacancies}</p>
+          <p className="mt-3 text-3xl font-semibold text-[#003366]">{openVacancies}</p>
           <p className="mt-2 text-xs text-slate-500">Suma de vacantes disponibles</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+        <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
           <p className="text-sm text-slate-500">Solicitudes cerradas</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-900">{filledOffers.length}</p>
+          <p className="mt-3 text-3xl font-semibold text-[#003366]">{filledOffers.length}</p>
           <p className="mt-2 text-xs text-slate-500">Ofertas ya completadas o no visibles</p>
         </div>
       </div>
@@ -235,18 +252,18 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
 
       <div className="grid gap-6 md:grid-cols-2">
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h3 className="text-xl font-semibold text-slate-900">Carreras disponibles</h3>
+          <h3 className="text-xl font-semibold text-[#003366]">Carreras disponibles</h3>
           <p className="mt-2 text-sm text-slate-600">Gestiona las carreras que aparecen en el filtro del home.</p>
           <form onSubmit={handleAddCareer} className="mt-4 flex gap-3">
-            <input value={newCareer} onChange={(e) => setNewCareer(e.target.value)} placeholder="Ej. Ingeniería de Sistemas" className="flex-1 rounded-[12px] border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
-            <button type="submit" className="rounded-full bg-[#223b87] px-4 py-2 text-sm font-semibold text-white">Agregar</button>
+            <input value={newCareer} onChange={(e) => setNewCareer(e.target.value)} placeholder="Ej. Ingeniería de Sistemas" className="flex-1 rounded-[12px] border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#2967CD]" />
+            <button type="submit" className="rounded-full bg-[#003366] px-4 py-2 text-sm font-semibold text-white">Agregar</button>
           </form>
           <div className="mt-4 space-y-3">
             {loadingCareers ? <p className="text-sm text-slate-500">Cargando carreras…</p> : careers.map((career) => (
               <div key={career.id} className="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-4 py-2">
                 <span className="text-sm font-medium text-slate-700">{career.name}</span>
                 <div className="flex gap-2">
-                  <button onClick={() => { setNewCareer(career.name); }} title="Editar nombre" className="inline-flex items-center gap-2 rounded-md bg-[#0085fc] px-3 py-1 text-sm font-semibold text-white hover:opacity-95">Editar</button>
+                  <button onClick={() => { setNewCareer(career.name); }} title="Editar nombre" className="inline-flex items-center gap-2 rounded-md bg-[#2967CD] px-3 py-1 text-sm font-semibold text-white hover:opacity-95">Editar</button>
                   <button onClick={() => handleDeleteCareer(career.id)} className="inline-flex items-center gap-2 rounded-md bg-red-600 px-3 py-1 text-sm font-semibold text-white hover:opacity-95">Eliminar</button>
                 </div>
               </div>
@@ -255,23 +272,43 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h3 className="text-xl font-semibold text-slate-900">Casos de éxito</h3>
+          <h3 className="text-xl font-semibold text-[#003366]">Testimonios</h3>
           <p className="mt-2 text-sm text-slate-600">Añade experiencias que se mostrarán en la página pública.</p>
           <form onSubmit={handleSaveStory} className="mt-4 space-y-4 rounded-2xl bg-white p-6 shadow-sm">
-            <div className="flex items-center gap-3 border-b border-slate-200 pb-3"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#223b87] text-white"><FileText size={17} /></span><div><p className="text-sm font-semibold text-slate-800">Contenido del caso</p></div></div>
-            <input value={storyDraft.title} onChange={(e) => setStoryDraft({ ...storyDraft, title: e.target.value })} placeholder="Título" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
-            <input value={storyDraft.institution} onChange={(e) => setStoryDraft({ ...storyDraft, institution: e.target.value })} placeholder="Empresa / institución (donde se realizó la pasantía)" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
+            <div className="flex items-center gap-3 border-b border-slate-200 pb-3"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#003366] text-white"><FileText size={17} /></span><div><p className="text-sm font-semibold text-slate-800">Contenido del caso</p></div></div>
+            <input value={storyDraft.title} onChange={(e) => setStoryDraft({ ...storyDraft, title: e.target.value })} placeholder="Título" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#2967CD]" />
+            <input value={storyDraft.institution} onChange={(e) => setStoryDraft({ ...storyDraft, institution: e.target.value })} placeholder="Empresa / institución (donde se realizó la pasantía)" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#2967CD]" />
             <div className="flex items-center gap-3">
-              <input id="showResult" type="checkbox" checked={showResultField} onChange={(e) => setShowResultField(e.target.checked)} className="h-4 w-4 rounded border-slate-300 text-[#223b87]" />
+              <input id="showResult" type="checkbox" checked={showResultField} onChange={(e) => setShowResultField(e.target.checked)} className="h-4 w-4 rounded border-slate-300 text-[#003366]" />
               <label htmlFor="showResult" className="text-sm text-slate-700">Agregar campo "Resultado" (opcional)</label>
             </div>
             {showResultField && (
-              <input value={storyDraft.highlight} onChange={(e) => setStoryDraft({ ...storyDraft, highlight: e.target.value })} placeholder="Resultado (ej. Desarrollo profesional, Contratación parcial)" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
+              <input value={storyDraft.highlight} onChange={(e) => setStoryDraft({ ...storyDraft, highlight: e.target.value })} placeholder="Resultado (ej. Desarrollo profesional, Contratación parcial)" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#2967CD]" />
             )}
-            <textarea value={storyDraft.description} onChange={(e) => setStoryDraft({ ...storyDraft, description: e.target.value })} rows={3} placeholder="Descripción" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#0085fc]" />
-            <label className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-[#0085fc]/50 bg-[#f3f8ff] px-4 py-4 text-sm text-slate-700 transition hover:bg-[#e8f4ff]"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0085fc] text-white"><UploadCloud size={19} /></span><span><span className="flex items-center gap-2 font-semibold text-slate-800"><Video size={16} /> Cargar video</span><span className="mt-1 block text-xs text-slate-600">MP4 o WebM. {storyVideoFile?.name || (isSupabaseConfigured ? 'Selecciona un archivo desde tu equipo.' : 'Requiere Supabase configurado para subir videos.')}</span></span>
-              <input type="file" accept="video/*" onChange={(e) => setStoryVideoFile(e.target.files?.[0] || null)} className="sr-only" disabled={!isSupabaseConfigured} />
+            <textarea value={storyDraft.description} onChange={(e) => setStoryDraft({ ...storyDraft, description: e.target.value })} rows={3} placeholder="Descripción" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#2967CD]" />
+            <label className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-[#2967CD]/50 bg-[#f3f8ff] px-4 py-4 text-sm text-slate-700 transition hover:bg-[#e8f4ff]"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2967CD] text-white"><UploadCloud size={19} /></span><span><span className="flex items-center gap-2 font-semibold text-slate-800"><Video size={16} /> Cargar video</span><span className="mt-1 block text-xs text-slate-600">MP4 o WebM. {storyVideoFile?.name || (isSupabaseConfigured ? 'Selecciona un archivo desde tu equipo.' : 'Requiere Supabase configurado para subir videos.')}</span></span>
+              <input type="file" accept="video/*" onChange={(e) => { setStoryVideoFile(e.target.files?.[0] || null); setRemoveStoryVideo(false) }} className="sr-only" disabled={!isSupabaseConfigured} />
             </label>
+            {editingStoryId && storyDraft.videoUrl && !removeStoryVideo && !storyVideoFile && (
+              <div className="flex items-center justify-between gap-3 rounded-[14px] border border-sky-100 bg-white px-4 py-3 text-xs text-slate-600">
+                <span className="truncate">Video actual guardado</span>
+                <button type="button" onClick={() => setRemoveStoryVideo(true)} className="shrink-0 font-semibold text-red-600 hover:underline">Eliminar video</button>
+              </div>
+            )}
+            <label className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-[#2967CD]/50 bg-[#f3f8ff] px-4 py-4 text-sm text-slate-700 transition hover:bg-[#e8f4ff]"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#003366] text-white"><ImagePlus size={19} /></span><span><span className="flex items-center gap-2 font-semibold text-slate-800"><ImagePlus size={16} /> Cargar fondo</span><span className="mt-1 block text-xs text-slate-600">JPG, PNG o WEBP. {storyBackgroundFile?.name || (isSupabaseConfigured ? 'Imagen opcional para personalizar el testimonio.' : 'Requiere Supabase configurado para subir imágenes.')}</span></span>
+              <input type="file" accept="image/*" onChange={(e) => { setStoryBackgroundFile(e.target.files?.[0] || null); setRemoveStoryBackground(false) }} className="sr-only" disabled={!isSupabaseConfigured} />
+            </label>
+            {editingStoryId && storyDraft.backgroundUrl && !removeStoryBackground && !storyBackgroundFile && (
+              <div className="overflow-hidden rounded-[14px] border border-sky-100 bg-white">
+                <div className="flex h-28 items-center justify-center bg-gradient-to-br from-[#e9f4ff] via-white to-[#dbeeff] p-2">
+                  <img src={storyDraft.backgroundUrl} alt="Fondo actual del testimonio" className="h-full w-full object-contain" />
+                </div>
+                <div className="flex items-center justify-between gap-3 px-4 py-3 text-xs text-slate-600">
+                  <span>Imagen de fondo actual</span>
+                  <button type="button" onClick={() => setRemoveStoryBackground(true)} className="font-semibold text-red-600 hover:underline">Eliminar fondo</button>
+                </div>
+              </div>
+            )}
             {videoPreviewUrl && (
               <div className="mt-2 overflow-hidden rounded-md border border-slate-200">
                 <video controls preload="metadata" className="block aspect-video w-full" src={videoPreviewUrl}>
@@ -282,7 +319,7 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
             {isUploading && (
               <div className="mt-2">
                 <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
-                  <div style={{ width: `${uploadProgress ?? 10}%` }} className="h-full rounded-full bg-[#0085fc] transition-all duration-300" />
+                  <div style={{ width: `${uploadProgress ?? 10}%` }} className="h-full rounded-full bg-[#2967CD] transition-all duration-300" />
                 </div>
                 <p className="mt-2 text-xs text-slate-600">Subiendo video… espera hasta que finalice antes de publicar.</p>
               </div>
@@ -295,12 +332,12 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
               <div key={s.id} className="rounded-md border border-[#cfe8ff] bg-[#f9fbff] p-3">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">{s.title}</p>
+                    <p className="text-sm font-semibold text-[#003366]">{s.title}</p>
                     <p className="mt-1 text-sm text-slate-600">{s.description}</p>
-                    {s.videoUrl && <p className="mt-1 text-xs font-medium text-[#0085fc]">Video adjunto</p>}
+                    {s.videoUrl && <p className="mt-1 text-xs font-medium text-[#2967CD]">Video adjunto</p>}
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => handleEditStory(s)} className="inline-flex items-center gap-2 rounded-md bg-[#223b87] px-3 py-1 text-sm font-semibold text-white hover:opacity-95">Editar</button>
+                    <button onClick={() => handleEditStory(s)} className="inline-flex items-center gap-2 rounded-md bg-[#003366] px-3 py-1 text-sm font-semibold text-white hover:opacity-95">Editar</button>
                     <button onClick={() => handleDeleteStory(s.id)} className="inline-flex items-center gap-2 rounded-md bg-red-600 px-3 py-1 text-sm font-semibold text-white hover:opacity-95">Eliminar</button>
                   </div>
                 </div>
@@ -321,7 +358,7 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50" onClick={() => setConfirm({ open: false })} />
           <div className="relative z-10 w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-slate-900">{confirm.title}</h3>
+            <h3 className="text-lg font-semibold text-[#003366]">{confirm.title}</h3>
             <p className="mt-2 text-sm text-slate-700">{confirm.body}</p>
             <div className="mt-4 flex justify-end gap-3">
               <button onClick={() => setConfirm({ open: false })} className="rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Cancelar</button>

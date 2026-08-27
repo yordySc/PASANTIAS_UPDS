@@ -111,3 +111,40 @@ html{
     scroll-behavior:smooth;
 
 }
+
+@keyframes background-shimmer {
+    0% { background-position: 120% 0; opacity: .12; }
+    50% { background-position: 0% 0; opacity: .28; }
+    100% { background-position: -120% 0; opacity: .12; }
+}
+
+.animate-background-shimmer {
+    animation: background-shimmer 30s ease-in-out infinite;
+}
+
+@keyframes background-drift {
+    0%, 100% { transform: translate3d(-18px, 12px, 0) scale(.92); opacity: .3; }
+    50% { transform: translate3d(35px, -26px, 0) scale(1.08); opacity: .7; }
+}
+
+.animate-background-drift {
+    animation: background-drift 26s ease-in-out infinite;
+}
+
+@keyframes background-drift-reverse {
+    0%, 100% { transform: translate3d(20px, -12px, 0) scale(1); opacity: .25; }
+    50% { transform: translate3d(-30px, 28px, 0) scale(.88); opacity: .65; }
+}
+
+.animate-background-drift-reverse {
+    animation: background-drift-reverse 29s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-background-shimmer,
+    .animate-background-drift,
+    .animate-background-drift-reverse {
+        animation: none;
+    }
+
+}

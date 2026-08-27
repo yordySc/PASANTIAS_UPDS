@@ -32,7 +32,7 @@ function App() {
       const nextStories = await getSuccessStories()
       setSuccessStories(nextStories)
     } catch (error) {
-      console.error('No se pudieron cargar los casos de éxito.', error)
+      console.error('No se pudieron cargar los testimonios.', error)
       setSuccessStories([])
     }
   }

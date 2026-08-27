@@ -6,7 +6,7 @@ interface SuccessCardProps {
 
 function SuccessCard({ title, description, accent = 'blue' }: SuccessCardProps) {
   const accentClasses = {
-    blue: 'border-sky-200 bg-sky-50 text-[#223b87]',
+    blue: 'border-sky-200 bg-sky-50 text-[#003366]',
     emerald: 'border-emerald-200 bg-emerald-50 text-emerald-700',
     amber: 'border-amber-200 bg-amber-50 text-amber-700',
   }

@@ -39,8 +39,12 @@ export async function getCareers(): Promise<Career[]> {
 
 export async function getSuccessStories(): Promise<SuccessStory[]> {
   if (isSupabaseConfigured) {
-    const { data, error } = await supabase.from('success_stories').select('id, title, description, institution, highlight, accent, video_url').order('created_at', { ascending: false })
-    if (!error && data) return data.map((story) => ({ ...story, videoUrl: story.video_url || undefined })) as SuccessStory[]
+    const { data, error } = await supabase.from('success_stories').select('id, title, description, institution, highlight, accent, video_url, background_url').order('created_at', { ascending: false })
+    if (!error && data) return data.map((story) => ({ ...story, videoUrl: story.video_url || undefined, backgroundUrl: story.background_url || undefined })) as SuccessStory[]
+
+    // Compatible con bases creadas antes de agregar background_url.
+    const legacy = await supabase.from('success_stories').select('id, title, description, institution, highlight, accent, video_url').order('created_at', { ascending: false })
+    if (!legacy.error && legacy.data) return legacy.data.map((story) => ({ ...story, videoUrl: story.video_url || undefined })) as SuccessStory[]
   }
   if (typeof window === 'undefined') return fallbackStories
   try {
@@ -55,9 +59,9 @@ export async function getSuccessStories(): Promise<SuccessStory[]> {
 
 export async function saveSuccessStory(story: Omit<SuccessStory, 'id'>): Promise<SuccessStory> {
   if (isSupabaseConfigured) {
-    const { data, error } = await supabase.from('success_stories').insert({ title: story.title, description: story.description, institution: story.institution, highlight: story.highlight, accent: story.accent, video_url: story.videoUrl || null }).select('id, title, description, institution, highlight, accent, video_url').single()
+    const { data, error } = await supabase.from('success_stories').insert({ title: story.title, description: story.description, institution: story.institution, highlight: story.highlight, accent: story.accent, video_url: story.videoUrl || null, background_url: story.backgroundUrl || null }).select('id, title, description, institution, highlight, accent, video_url, background_url').single()
     if (error) throw error
-    return { ...data, videoUrl: data.video_url || undefined } as SuccessStory
+    return { ...data, videoUrl: data.video_url || undefined, backgroundUrl: data.background_url || undefined } as SuccessStory
   }
   const nextStory: SuccessStory = { ...story, id: crypto.randomUUID() }
   const current = await getSuccessStories()
@@ -70,9 +74,9 @@ export async function saveSuccessStory(story: Omit<SuccessStory, 'id'>): Promise
 
 export async function updateSuccessStory(id: string, story: Partial<Omit<SuccessStory, 'id'>>): Promise<SuccessStory> {
   if (isSupabaseConfigured) {
-    const { data, error } = await supabase.from('success_stories').update({ title: story.title, description: story.description, institution: story.institution, highlight: story.highlight, accent: story.accent, video_url: story.videoUrl || null }).eq('id', id).select('id, title, description, institution, highlight, accent, video_url').single()
+    const { data, error } = await supabase.from('success_stories').update({ title: story.title, description: story.description, institution: story.institution, highlight: story.highlight, accent: story.accent, video_url: story.videoUrl || null, background_url: story.backgroundUrl || null }).eq('id', id).select('id, title, description, institution, highlight, accent, video_url, background_url').single()
     if (error) throw error
-    return { ...data, videoUrl: data.video_url || undefined } as SuccessStory
+    return { ...data, videoUrl: data.video_url || undefined, backgroundUrl: data.background_url || undefined } as SuccessStory
   }
   const current = await getSuccessStories()
   const updated = current.map((s) => s.id === id ? { ...s, ...story } as SuccessStory : s)
@@ -167,4 +171,19 @@ export async function uploadSuccessStoryVideo(file: File) {
   if (error) throw error
   const publicUrl = supabase.storage.from('success-story-videos').getPublicUrl(path).data.publicUrl
   return { publicUrl, path }
+}
+
+export async function uploadSuccessStoryBackground(file: File) {
+  if (!file.type.startsWith('image/')) throw new Error('Selecciona una imagen válida para el fondo.')
+  if (!isSupabaseConfigured) throw new Error('Configura Supabase para cargar fondos de testimonios.')
+  const extension = file.name.split('.').pop() || 'jpg'
+  const path = `${crypto.randomUUID()}.${extension}`
+  const { error } = await supabase.storage.from('success-story-backgrounds').upload(path, file, { contentType: file.type })
+  if (error) {
+    if (error.message.toLowerCase().includes('bucket not found')) {
+      throw new Error('No existe el bucket de fondos de testimonios. Ejecuta supabase-setup.sql en Supabase y vuelve a intentarlo.')
+    }
+    throw error
+  }
+  return supabase.storage.from('success-story-backgrounds').getPublicUrl(path).data.publicUrl
 }

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import logoUPDS from "../../assets/logo-upds.png";
 import logotipoUPDS from "../../assets/logotipo-upds.png";
 
 export default function Header() {
@@ -27,7 +26,7 @@ export default function Header() {
         : [
             { name: "Inicio Guía", path: "/guide", type: "link" },
             { name: "Empresas", path: "/student", type: "link" },
-            { name: "Casos de Éxito", path: "/student/success-stories", type: "link" }
+            { name: "Testimonios", path: "/student/success-stories", type: "link" }
           ];
 
     return (
@@ -42,10 +41,12 @@ export default function Header() {
             >
                 <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
                     <Link to="/guide" className="flex items-center gap-3 group">
-                        <img src={logoUPDS} className="h-10" />
+                        <span className="flex h-11 w-[7.5rem] items-center justify-center rounded-lg bg-white/95 px-2 shadow-[0_8px_20px_rgba(0,31,75,0.18)] sm:h-12 sm:w-[8.5rem]">
+                            <img src={logotipoUPDS} className="h-8 w-full object-contain sm:h-9" alt="UPDS" />
+                        </span>
                         <div>
-                            <p className="text-[10px] tracking-[3px] uppercase text-blue-600 font-bold">UPDS</p>
-                            <h1 className="font-bold text-lg text-slate-900 leading-none">Domingo Savio</h1>
+                            <p className={`text-[10px] tracking-[3px] uppercase font-bold ${scrolled ? "text-[#2967CD]" : "text-cyan-200"}`}>UPDS</p>
+                            <h1 className={`font-bold text-lg leading-none ${scrolled ? "text-[#003366]" : "text-white"}`}>Domingo Savio</h1>
                         </div>
                     </Link>
 
@@ -53,14 +54,14 @@ export default function Header() {
                         {menuLinks.map((link) => (
                             <motion.div key={link.name} whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}>
                                 {link.type === "a" ? (
-                                    <a href={link.path} className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 transition-colors duration-300 relative group">
+                                    <a href={link.path} className={`px-4 py-2 text-sm font-semibold transition-colors duration-300 relative group ${scrolled ? "text-slate-700 hover:text-[#2967CD]" : "text-white/90 hover:text-cyan-200"}`}>
                                         {link.name}
-                                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#2967CD] transition-all duration-300 group-hover:w-full"></span>
                                     </a>
                                 ) : (
-                                    <Link to={link.path} className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 transition-colors duration-300 relative group">
+                                    <Link to={link.path} className={`px-4 py-2 text-sm font-semibold transition-colors duration-300 relative group ${scrolled ? "text-slate-700 hover:text-[#2967CD]" : "text-white/90 hover:text-cyan-200"}`}>
                                         {link.name}
-                                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#2967CD] transition-all duration-300 group-hover:w-full"></span>
                                     </Link>
                                 )}
                             </motion.div>
@@ -69,9 +70,9 @@ export default function Header() {
 
                     <button onClick={() => setMenuOpen(true)} className="md:hidden p-2 group">
                         <div className="space-y-1.5">
-                            <span className="block w-7 h-0.5 bg-slate-900 transition-all group-hover:w-5"></span>
-                            <span className="block w-7 h-0.5 bg-slate-900"></span>
-                            <span className="block w-7 h-0.5 bg-slate-900 transition-all group-hover:w-5 ml-auto"></span>
+                            <span className={`block w-7 h-0.5 transition-all group-hover:w-5 ${scrolled ? "bg-[#003366]" : "bg-white"}`}></span>
+                                <span className={`block w-7 h-0.5 ${scrolled ? "bg-[#003366]" : "bg-white"}`}></span>
+                                <span className={`block w-7 h-0.5 transition-all group-hover:w-5 ml-auto ${scrolled ? "bg-[#003366]" : "bg-white"}`}></span>
                         </div>
                     </button>
                 </div>

@@ -4,12 +4,12 @@ import { motion } from 'framer-motion'
 import Header from '../components/guide/Header'
 import AnimatedBackground from '../components/guide/AnimatedBackground'
 import Reveal from '../components/guide/Reveal'
-import logoUPDS from '../assets/logo-upds.png'
-import { Clock3, FileText, Lightbulb, Mail, MapPin, MessagesSquare, Phone, SearchCheck, UsersRound } from 'lucide-react'
-import { FaFacebookF, FaInstagram } from 'react-icons/fa'
+import PageFooter from '../components/guide/PageFooter'
+import { Clock3, FileText, Lightbulb, MessagesSquare, SearchCheck, UsersRound } from 'lucide-react'
 import imagen2UPDS from '../assets/imagen2UPDS.jpg'
 import imagen1 from '../assets/imagen1UPDS.jpg'
-import graduado from '../assets/Graduado.png'
+import logoUPDS from '../assets/logo-upds.png'
+import fondoVideoUPDS from '../assets/FondoVideoUpds.mp4'
 
 function Guide() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -42,18 +42,31 @@ function Guide() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-24">
+    <div className="relative isolate min-h-screen overflow-hidden bg-[#061f43] pt-24">
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[radial-gradient(circle_at_8%_12%,rgba(41,103,205,0.72),transparent_28%),radial-gradient(circle_at_92%_38%,rgba(8,145,178,0.28),transparent_24%),linear-gradient(135deg,#061f43_0%,#0b3470_45%,#123f83_72%,#06234b_100%)]">
+        <AnimatedBackground />
+        <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.06)_48%,transparent_70%)]" />
+      </div>
       
       {/* Header Profesional Importado */}
       <Header />
 
       {/* Hero Section con Fondo Animado */}
-      <section id="inicio" className="relative overflow-hidden bg-gradient-to-br from-[#223b87] via-[#1e3a8a] to-[#0085fc] px-5 py-16 sm:py-28 lg:py-32">
-        <AnimatedBackground />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_60%)]" />
+      <section id="inicio" className="relative overflow-hidden bg-transparent px-5 py-16 sm:py-28 lg:py-32">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 bg-[#061f43]" />
+        <video
+          className="pointer-events-none absolute inset-x-0 top-1/2 z-0 h-auto w-full -translate-y-1/2 object-contain object-center sm:inset-0 sm:h-full sm:translate-y-0 sm:object-cover"
+          src={fondoVideoUPDS}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+        />
         
-        <div className="relative z-10 mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+        <div className="relative z-10 mx-auto max-w-7xl min-w-0">
+          <div className="grid min-w-0 gap-12 lg:grid-cols-2 lg:items-center">
             
             <motion.div 
               initial={{ opacity: 0, x: -80 }} 
@@ -79,7 +92,7 @@ function Guide() {
                 initial={{ opacity: 0, y: 30 }} 
                 animate={{ opacity: 1, y: 0 }} 
                 transition={{ delay: 0.2, duration: 0.8 }}
-                className="text-4xl font-bold leading-[1.1] text-white sm:text-6xl lg:text-7xl tracking-tighter"
+                className="max-w-full break-words text-4xl font-bold leading-[1.1] text-white sm:text-6xl lg:text-7xl tracking-tighter"
               >
                 {/* PASO 6.2 - Mejorar el título */}
                 <motion.span
@@ -110,13 +123,17 @@ function Guide() {
                 {/* PASO 6.4 - Mejorar los botones */}
                 <Link 
                   to="/student" 
-                  className="group relative overflow-hidden rounded-2xl bg-white px-8 py-4 font-semibold text-[#223b87] shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-blue-500/40 active:scale-95"
+                  className="group relative overflow-hidden rounded-2xl bg-white px-8 py-4 font-semibold text-[#003366] shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-blue-500/40 active:scale-95"
                 >
                   <span className="absolute left-[-100%] top-0 h-full w-full bg-gradient-to-r from-transparent via-white/60 to-transparent transition-all duration-700 group-hover:left-full" />
                   Explorar Empresas
                 </Link>
-                <a 
-                  href="#consejos" 
+                <a
+                  href="#consejos"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    document.getElementById('consejos')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }}
                   className="rounded-2xl border-2 border-white/70 px-8 py-4 font-semibold text-white transition-all duration-300 hover:scale-105 hover:-translate-y-2 hover:bg-white/10 hover:border-white active:scale-95"
                 >
                   Ver Consejos
@@ -124,7 +141,7 @@ function Guide() {
               </motion.div>
             </motion.div>
 
-            <div className="relative flex justify-center items-center h-[320px] sm:h-[450px] lg:h-[500px] mt-8 lg:mt-0">
+            <div className="relative mt-4 flex h-[250px] items-center justify-center sm:mt-8 sm:h-[450px] lg:mt-0 lg:h-[500px]">
               <div className="absolute h-[250px] w-[250px] sm:h-[350px] sm:w-[350px] lg:h-[420px] lg:w-[420px] rounded-full sm:rounded-[4rem] border border-white/30 bg-white/10 backdrop-blur-3xl shadow-2xl translate-x-4 translate-y-4 lg:translate-x-8 lg:translate-y-8" />
               
               {/* PASO 6.5 - Glow detrás de las imágenes */}
@@ -146,27 +163,24 @@ function Guide() {
           </div>
         </div>
         
-        {/* PASO 6.7 - Indicador para bajar */}
-        <div className="absolute bottom-8 left-1/2 -z-0 -translate-x-1/2 flex flex-col items-center text-white">
-          <p className="text-sm tracking-widest uppercase opacity-70">Desliza</p>
-          <div className="mt-4 animate-bounce text-3xl">↓</div>
-        </div>
       </section>
 
               {/* Información de Prácticas Profesionales */}
-      <section id="informacion" className="px-5 py-20 sm:py-28 lg:px-8">
+      <section id="informacion" className="relative overflow-hidden bg-transparent px-5 py-20 sm:py-28 lg:px-8">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(rgba(255,255,255,0.45)_1px,transparent_1px)] [background-size:24px_24px]" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-12 h-72 w-72 rounded-full bg-cyan-300/20 blur-3xl" />
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 mb-6">
-                <span className="h-2 w-2 rounded-full bg-[#0085fc] animate-pulse"></span>
-                <p className="text-xs font-bold uppercase tracking-widest text-[#0085fc]">¿Qué son las Prácticas Profesionales?</p>
+              <div className="mb-6 inline-flex items-center gap-3 rounded-2xl border border-cyan-200/30 border-l-4 border-l-[#22d3ee] bg-white/10 px-4 py-3 shadow-[0_10px_25px_rgba(0,20,60,0.2)] backdrop-blur-sm">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#22d3ee] shadow-[0_0_0_4px_rgba(34,211,238,0.16)]"></span>
+                <h2 className="text-xl font-extrabold uppercase leading-tight tracking-[0.08em] text-white sm:text-2xl">¿Qué son las Prácticas Profesionales?</h2>
               </div>
-              <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl mb-6">Una oportunidad real para <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#223b87] to-[#0085fc]">aprender y crecer</span></h2>
-              <p className="text-lg leading-relaxed text-slate-600 mb-8">
+              <h3 className="mb-6 text-3xl font-bold leading-[1.08] tracking-tight text-white/90 sm:text-5xl">Una oportunidad real para <span className="bg-gradient-to-r from-cyan-200 via-sky-300 to-white bg-clip-text text-transparent">aprender y crecer</span></h3>
+              <p className="mb-8 text-lg leading-relaxed text-blue-50">
                 Las Prácticas Profesionales son más que un requisito académico. Son una inmersión directa en una empresa real donde aplicarás todo lo que aprendes en el aula de la UPDS.
               </p>
-              <Link to="/student" className="inline-flex items-center gap-2 text-[#0085fc] font-semibold hover:text-[#223b87] transition group">
+              <Link to="/student" className="group inline-flex items-center gap-2 font-semibold text-cyan-200 transition hover:text-white">
                 Ver empresas disponibles <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
               </Link>
             </div>
@@ -179,19 +193,19 @@ function Guide() {
                     transition={{ delay: index * 0.1, duration: 0.45 }}
                     whileHover={{ y: -6 }}
                     whileTap={{ scale: 0.985 }}
-                    className="group relative isolate h-full overflow-hidden border border-slate-200 bg-white p-5 shadow-[0_12px_30px_-24px_rgba(15,23,42,0.45)] transition-all duration-300 hover:border-[#008ec4]/45 hover:shadow-[0_20px_42px_-24px_rgba(0,133,252,0.32)] sm:p-6"
+                    className="group relative isolate h-full overflow-hidden border border-[#b9d8f4] bg-white/95 p-5 shadow-[0_16px_35px_-24px_rgba(0,51,102,0.38)] transition-all duration-300 hover:-translate-y-1 hover:border-[#22d3ee]/70 hover:shadow-[0_22px_45px_-24px_rgba(0,133,252,0.42)] sm:p-6"
                   >
-                    <span className="pointer-events-none absolute -right-1 -top-8 -z-10 select-none text-9xl font-black leading-none tracking-tighter text-[#008ec4]/[0.07] transition-transform duration-500 group-hover:scale-110 group-hover:text-[#008ec4]/[0.1]">0{index + 1}</span>
+                    <span className="pointer-events-none absolute -right-1 -top-8 -z-10 select-none text-9xl font-black leading-none tracking-tighter text-[#2967CD]/[0.07] transition-transform duration-500 group-hover:scale-110 group-hover:text-[#2967CD]/[0.1]">0{index + 1}</span>
                     <div className="mb-6 flex items-center justify-between">
-                      <div className="flex h-11 w-11 items-center justify-center bg-slate-900 text-xl font-black text-white transition-all duration-300 [clip-path:polygon(0_0,100%_0,82%_100%,0_100%)] group-hover:bg-[#008ec4] group-hover:pr-1">
+                      <div className="flex h-11 w-11 items-center justify-center bg-[#003366] text-xl font-black text-white transition-all duration-300 [clip-path:polygon(0_0,100%_0,82%_100%,0_100%)] group-hover:bg-[#2967CD] group-hover:pr-1">
                         {item.monogram}
                       </div>
                     </div>
                     <div>
                       <p className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{item.badge}</p>
-                      <h3 className="text-xl font-bold tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-[#008ec4] sm:text-2xl">{item.title}</h3>
+                      <h3 className="text-xl font-bold tracking-tight text-[#003366] transition-colors duration-300 group-hover:text-[#2967CD] sm:text-2xl">{item.title}</h3>
                       <p className="mt-3 text-sm leading-7 text-slate-600">{item.desc}</p>
-                      <div className="mt-6 h-0.5 w-8 bg-[#008ec4] transition-all duration-300 group-hover:w-16" />
+                      <div className="mt-6 h-0.5 w-8 bg-[#2967CD] transition-all duration-300 group-hover:w-16" />
                     </div>
                   </motion.div>
                 </Reveal>
@@ -202,14 +216,16 @@ function Guide() {
       </section>
 
       {/* Consejos */}
-      <section id="consejos" className="overflow-hidden bg-[#f7fbfc] px-5 py-20 sm:px-6 lg:px-8">
+      <section id="consejos" className="relative overflow-hidden bg-transparent px-5 py-20 sm:px-6 lg:px-8">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(rgba(255,255,255,0.45)_1px,transparent_1px)] [background-size:24px_24px]" />
+        <div aria-hidden="true" className="pointer-events-none absolute -left-24 bottom-8 h-72 w-72 rounded-full bg-cyan-300/15 blur-3xl" />
         <div className="mx-auto max-w-7xl">
           <div className="mb-14 max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-widest text-[#0085fc]">Consejos Prácticos</p>
-            <h2 className="mt-4 text-4xl font-bold text-slate-900">Claves para tener éxito en tus Prácticas Profesionales</h2>
+            <h2 className="inline-flex border border-cyan-200/30 border-l-4 border-l-[#22d3ee] bg-white/10 px-4 py-2 text-xl font-extrabold uppercase leading-tight tracking-[0.1em] text-white shadow-[0_10px_25px_rgba(0,20,60,0.2)] backdrop-blur-sm sm:text-2xl">Consejos Prácticos</h2>
+            <h3 className="mt-5 text-3xl font-bold leading-[1.08] tracking-tight text-white/90 sm:text-5xl">Claves para tener éxito en tus <span className="bg-gradient-to-r from-cyan-200 via-sky-300 to-white bg-clip-text text-transparent">Prácticas Profesionales</span></h3>
           </div>
           <div className="relative mx-auto max-w-4xl space-y-3">
-            <div className="absolute bottom-9 left-5 top-9 w-px bg-gradient-to-b from-[#2596be]/10 via-[#2596be]/50 to-[#2596be]/10 sm:left-8" />
+            <div className="absolute bottom-9 left-5 top-9 w-px bg-gradient-to-b from-[#2967CD]/10 via-[#2967CD]/50 to-[#2967CD]/10 sm:left-8" />
             {[
               { title: 'Prepara un CV profesional', text: 'Destaca tus logros con una propuesta clara y ordenada.', icon: FileText },
               { title: 'Investiga la empresa', text: 'Conoce su misión y objetivos para presentarte con más seguridad.', accent: 'from-violet-500 to-fuchsia-500' },
@@ -231,18 +247,18 @@ function Guide() {
                 className="group relative grid grid-cols-[3.25rem_1fr] gap-4 py-2 sm:grid-cols-[4.5rem_1fr] sm:gap-6"
               >
                 <div className="relative z-10 pt-3 sm:pt-4">
-                  <div className="flex h-10 w-10 items-center justify-center border border-[#2596be]/25 bg-white text-[#2596be] shadow-[5px_5px_0_rgba(37,150,190,0.14)] transition-all duration-300 [clip-path:polygon(18%_0,100%_0,100%_82%,82%_100%,0_100%,0_18%)] group-hover:-translate-y-1 group-hover:bg-[#2596be] group-hover:text-white group-hover:shadow-[7px_7px_0_rgba(37,150,190,0.2)] sm:h-14 sm:w-14">
+                  <div className="flex h-10 w-10 items-center justify-center border border-[#2967CD]/25 bg-white text-[#2967CD] shadow-[5px_5px_0_rgba(37,150,190,0.14)] transition-all duration-300 [clip-path:polygon(18%_0,100%_0,100%_82%,82%_100%,0_100%,0_18%)] group-hover:-translate-y-1 group-hover:bg-[#2967CD] group-hover:text-white group-hover:shadow-[7px_7px_0_rgba(37,150,190,0.2)] sm:h-14 sm:w-14">
                     <TipIcon className="h-5 w-5" strokeWidth={1.8} />
                   </div>
                 </div>
-                <div className="relative overflow-hidden border border-slate-200/80 bg-white px-5 py-5 shadow-sm transition-all duration-300 before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-[#2596be] before:scale-y-0 before:transition-transform before:duration-300 group-hover:-translate-y-1 group-hover:border-[#2596be]/35 group-hover:shadow-lg group-hover:shadow-[#2596be]/10 group-hover:before:scale-y-100 sm:px-7 sm:py-6">
-                  <span className="absolute right-4 top-3 text-[10px] font-black tracking-[0.22em] text-[#2596be]/25 sm:right-6 sm:top-4">0{i + 1}</span>
+                <div className="relative overflow-hidden border border-slate-200/80 bg-white px-5 py-5 shadow-sm transition-all duration-300 before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-[#2967CD] before:scale-y-0 before:transition-transform before:duration-300 group-hover:-translate-y-1 group-hover:border-[#2967CD]/35 group-hover:shadow-lg group-hover:shadow-[#2967CD]/10 group-hover:before:scale-y-100 sm:px-7 sm:py-6">
+                  <span className="absolute right-4 top-3 text-[10px] font-black tracking-[0.22em] text-[#2967CD]/25 sm:right-6 sm:top-4">0{i + 1}</span>
                   <div className="flex flex-col items-start gap-1 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-4 sm:gap-y-2">
-                    <h3 className="text-xl font-bold tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-[#2596be] sm:text-2xl">{tip.title}</h3>
-                    <span className="border-l-2 border-[#2596be]/30 pl-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#2596be]">Consejo clave</span>
+                    <h3 className="text-xl font-bold tracking-tight text-[#003366] transition-colors duration-300 group-hover:text-[#2967CD] sm:text-2xl">{tip.title}</h3>
+                    <span className="border-l-2 border-[#2967CD]/30 pl-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#2967CD]">Consejo clave</span>
                   </div>
                   <p className="mt-2 max-w-xl text-[13px] leading-6 text-slate-600 sm:mt-3 sm:text-sm sm:leading-7">{tip.text}</p>
-                  <div className="mt-4 h-px w-10 bg-[#2596be]/40 transition-all duration-300 group-hover:w-20 group-hover:bg-[#2596be]" />
+                  <div className="mt-4 h-px w-10 bg-[#2967CD]/40 transition-all duration-300 group-hover:w-20 group-hover:bg-[#2967CD]" />
                 </div>
               </motion.div>
               )
@@ -252,9 +268,10 @@ function Guide() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="px-5 py-20 bg-slate-50">
+      <section id="faq" className="relative overflow-hidden bg-transparent px-5 py-20">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-25 [background-image:radial-gradient(rgba(255,255,255,0.5)_1px,transparent_1px)] [background-size:22px_22px]" />
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-3xl font-bold text-center mb-12">Preguntas Frecuentes</h2>
+          <h2 className="mb-12 text-center text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Preguntas Frecuentes</h2>
           <div className="space-y-4">
             {[
               { title: '¿Cómo me postulo?', text: 'Explora el catálogo, elige una oportunidad y presenta tu carta de compromiso.' },
@@ -266,12 +283,12 @@ function Guide() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.08 }}
-                className={`rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm ${index % 2 === 0 ? 'ml-0 md:ml-4' : 'mr-0 md:mr-4'}`}
+                className={`rounded-[24px] border border-white/80 bg-[#edf5ff] p-6 shadow-[8px_8px_18px_rgba(0,35,85,0.22),-6px_-6px_18px_rgba(255,255,255,0.5)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[12px_12px_22px_rgba(0,35,85,0.25),-8px_-8px_20px_rgba(255,255,255,0.55)] ${index % 2 === 0 ? 'ml-0 md:ml-4' : 'mr-0 md:mr-4'}`}
               >
                 <div className="flex items-start gap-3">
-                  <div className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#0085fc]" />
+                  <div className="mt-1 h-3 w-3 shrink-0 rounded-full bg-[#2967CD] shadow-[0_0_0_5px_rgba(41,103,205,0.12)]" />
                   <div>
-                    <h3 className="font-bold text-slate-900">{faq.title}</h3>
+                    <h3 className="font-bold text-[#003366]">{faq.title}</h3>
                     <p className="mt-2 text-sm leading-7 text-slate-600">{faq.text}</p>
                   </div>
                 </div>
@@ -283,9 +300,9 @@ function Guide() {
 
       <section className="px-5 py-20">
         <div className="mx-auto max-w-6xl">
-          <div className="relative isolate overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0a347c] via-[#1457b8] to-[#008ec4] p-8 text-white shadow-2xl sm:p-10 lg:p-12">
+          <div className="relative isolate overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0a347c] via-[#1457b8] to-[#2967CD] p-8 text-white shadow-2xl sm:p-10 lg:p-12">
             <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-25 [background-image:radial-gradient(rgba(255,255,255,0.55)_1px,transparent_1px)] [background-size:16px_16px]" />
-            <img src={graduado} alt="" aria-hidden="true" className="pointer-events-none absolute -bottom-3 -right-5 z-0 w-64 opacity-65 sm:w-80 lg:w-96" />
+            <img src={logoUPDS} alt="" aria-hidden="true" className="pointer-events-none absolute bottom-3 right-3 z-0 h-36 w-auto max-w-[9rem] object-contain opacity-35 sm:right-6 sm:h-44 sm:max-w-[11rem] lg:h-52 lg:max-w-[13rem]" />
             <div className="relative z-10 max-w-xl">
               <p className="mb-6 text-[10px] font-black uppercase tracking-[0.28em] text-cyan-100">UPDS · Prácticas Profesionales</p>
               <h2 className="text-3xl font-bold sm:text-4xl">¿Listo para dar el siguiente paso?</h2>
@@ -296,46 +313,7 @@ function Guide() {
         </div>
       </section>
 
-      <footer className="border-t bg-white px-5 py-12 text-slate-600">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid gap-8 md:grid-cols-3 items-start">
-            <div className="space-y-4">
-              <img src={logoUPDS} alt="UPDS" className="h-12 w-auto" />
-              <p className="text-sm text-slate-700">Universidad Privada Domingo Savio — Guía oficial de Prácticas Profesionales.</p>
-              <div className="flex items-center gap-3 text-sm text-slate-600">
-                <MapPin size={16} /> <span>B/ German Busch esquina Fabián Ruiz , Ciudad Tarija, Bolivia</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-slate-600">
-                <Phone size={16} /> <a href="tel:+591 75111830" className="hover:underline">+591 75111830</a>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-slate-600">
-                <Mail size={16} /> <a href="mailto:contacto@upds.edu.bo" className="hover:underline">infoupds.tarija@upds.edu.bo</a>
-              </div>
-            </div>
-            <div>
-              <h4 className="mb-3 text-sm font-semibold text-slate-800">Enlaces rápidos</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="/student" className="hover:underline">Empresas</a></li>
-                <li><a href="/student/success-stories" className="hover:underline">Casos de éxito</a></li>
-                <li><a href="/guide" className="hover:underline">Guía</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="mb-3 text-sm font-semibold text-slate-800">Síguenos</h4>
-              <p className="text-sm text-slate-600 mb-3">Sigue a la UPDS en redes para mantenerte al día.</p>
-              <div className="flex items-center gap-3">
-                <a href="https://www.facebook.com/universidadprivadadomingosaviotarija" target="_blank" rel="noreferrer" aria-label="Facebook UPDS Tarija" className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1877f2] text-white transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/30">
-                  <FaFacebookF size={18} />
-                </a>
-                <a href="https://www.instagram.com/upds_tarija?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" aria-label="Instagram UPDS Tarija" className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-pink-500/30">
-                  <FaInstagram size={19} />
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 border-t pt-6 text-center text-sm text-slate-500">© 2026 Universidad Privada Domingo Savio • Todos los derechos reservados.</div>
-        </div>
-      </footer>
+      <PageFooter />
     </div>
   )
 }

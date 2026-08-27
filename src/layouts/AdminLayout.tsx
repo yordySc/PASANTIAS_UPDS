@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import AnimatedBackground from '../components/guide/AnimatedBackground'
 
 function AdminLayout() {
   const navigate = useNavigate()
@@ -11,11 +12,12 @@ function AdminLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800">
+    <div className="relative isolate min-h-screen overflow-hidden bg-gradient-to-br from-[#003366] via-[#1e3a8a] to-[#2967CD] text-slate-800">
+      <div className="pointer-events-none absolute inset-0 -z-10"><AnimatedBackground /></div>
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 lg:flex-row lg:px-8">
-        <aside className="w-full rounded-2xl bg-slate-900 p-6 text-white shadow-lg lg:w-72">
+        <aside className="w-full rounded-2xl bg-[#003366] p-6 text-white shadow-lg lg:w-72">
           <div className="mb-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#0085fc]">Administración</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#2967CD]">Administración</p>
             <h2 className="mt-2 text-xl font-semibold">Panel de prácticas</h2>
             <p className="mt-2 text-sm leading-6 text-slate-400">Aquí encontrarás todo lo necesario para gestionar la información de forma sencilla.</p>
           </div>

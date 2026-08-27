@@ -1,16 +1,17 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../components/guide/Header';
+import AnimatedBackground from '../components/guide/AnimatedBackground';
+import PageFooter from '../components/guide/PageFooter';
 
 function StudentLayout() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="relative isolate min-h-screen overflow-hidden bg-gradient-to-br from-[#003366] via-[#1e3a8a] to-[#2967CD]">
+      <div className="pointer-events-none absolute inset-0 -z-10"><AnimatedBackground /></div>
       <Header />
-      <main className="pt-24 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-16">
+      <main className="relative z-10 pt-24 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-16">
         <Outlet />
       </main>
-      <footer className="border-t border-slate-200 bg-white py-6 text-center text-sm text-slate-500">
-        © 2026 Universidad Privada Domingo Savio • Todos los derechos reservados.
-      </footer>
+      <PageFooter />
     </div>
   );
 }

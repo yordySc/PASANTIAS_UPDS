@@ -30,7 +30,36 @@ for delete
 to authenticated
 using (bucket_id = 'company-logos' and public.is_admin());
 
--- 3) Crear un perfil de administrador para un usuario ya registrado en auth.users
+-- 3) Bucket para imágenes de fondo de testimonios
+insert into storage.buckets (id, name, public)
+values ('success-story-backgrounds', 'success-story-backgrounds', true)
+on conflict (id) do nothing;
+
+create policy if not exists "Public read access for testimony backgrounds"
+on storage.objects
+for select
+using (bucket_id = 'success-story-backgrounds');
+
+create policy if not exists "Admins can upload testimony backgrounds"
+on storage.objects
+for insert
+to authenticated
+with check (bucket_id = 'success-story-backgrounds' and public.is_admin());
+
+create policy if not exists "Admins can update testimony backgrounds"
+on storage.objects
+for update
+to authenticated
+using (bucket_id = 'success-story-backgrounds' and public.is_admin())
+with check (bucket_id = 'success-story-backgrounds' and public.is_admin());
+
+create policy if not exists "Admins can delete testimony backgrounds"
+on storage.objects
+for delete
+to authenticated
+using (bucket_id = 'success-story-backgrounds' and public.is_admin());
+
+-- 4) Crear un perfil de administrador para un usuario ya registrado en auth.users
 -- Reemplaza el UUID por el id real del usuario que quieras usar como admin.
 -- insert into public.profiles (id, full_name, role)
 -- values ('00000000-0000-0000-0000-000000000000', 'Administrador', 'admin');
