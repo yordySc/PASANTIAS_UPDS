@@ -14,6 +14,16 @@ import fondoVideoUPDS from '../assets/FondoVideoUpds.mp4'
 function Guide() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+  const scrollToAdvice = () => {
+    const adviceSection = document.getElementById('consejos')
+    if (!adviceSection) return
+
+    const headerOffset = 88
+    const targetTop = adviceSection.getBoundingClientRect().top + window.scrollY - headerOffset
+    window.history.replaceState(null, '', '#consejos')
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' })
+  }
+
   const benefits = [
     {
       title: 'Aprende',
@@ -128,16 +138,13 @@ function Guide() {
                   <span className="absolute left-[-100%] top-0 h-full w-full bg-gradient-to-r from-transparent via-white/60 to-transparent transition-all duration-700 group-hover:left-full" />
                   Explorar Empresas
                 </Link>
-                <a
-                  href="#consejos"
-                  onClick={(event) => {
-                    event.preventDefault()
-                    document.getElementById('consejos')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                  }}
+                <button
+                  type="button"
+                  onClick={scrollToAdvice}
                   className="rounded-2xl border-2 border-white/70 px-8 py-4 font-semibold text-white transition-all duration-300 hover:scale-105 hover:-translate-y-2 hover:bg-white/10 hover:border-white active:scale-95"
                 >
                   Ver Consejos
-                </a>
+                </button>
               </motion.div>
             </motion.div>
 
@@ -145,7 +152,7 @@ function Guide() {
               <div className="absolute h-[250px] w-[250px] sm:h-[350px] sm:w-[350px] lg:h-[420px] lg:w-[420px] rounded-full sm:rounded-[4rem] border border-white/30 bg-white/10 backdrop-blur-3xl shadow-2xl translate-x-4 translate-y-4 lg:translate-x-8 lg:translate-y-8" />
               
               {/* PASO 6.5 - Glow detrás de las imágenes */}
-              <div className="absolute h-[520px] w-[520px] rounded-full bg-cyan-400/20 blur-[120px] animate-pulse" />
+              <div className="pointer-events-none absolute h-[520px] w-[520px] rounded-full bg-cyan-400/20 blur-[120px] animate-pulse" />
 
               {/* PASO 6.6 - Mejorar las imágenes */}
               <img 
@@ -216,7 +223,7 @@ function Guide() {
       </section>
 
       {/* Consejos */}
-      <section id="consejos" className="relative overflow-hidden bg-transparent px-5 py-20 sm:px-6 lg:px-8">
+      <section id="consejos" className="relative scroll-mt-24 overflow-hidden bg-transparent px-5 py-20 sm:px-6 lg:px-8">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(rgba(255,255,255,0.45)_1px,transparent_1px)] [background-size:24px_24px]" />
         <div aria-hidden="true" className="pointer-events-none absolute -left-24 bottom-8 h-72 w-72 rounded-full bg-cyan-300/15 blur-3xl" />
         <div className="mx-auto max-w-7xl">
