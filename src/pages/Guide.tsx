@@ -1,18 +1,57 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import Header from '../components/guide/Header'
 import AnimatedBackground from '../components/guide/AnimatedBackground'
 import Reveal from '../components/guide/Reveal'
 import PageFooter from '../components/guide/PageFooter'
-import { Clock3, FileText, Lightbulb, MessagesSquare, SearchCheck, UsersRound } from 'lucide-react'
+import { ChevronDown, ChevronUp, Clock3, FileText, Lightbulb, MessagesSquare, SearchCheck, UsersRound } from 'lucide-react'
 import imagen2UPDS from '../assets/imagen2UPDS.jpg'
 import imagen1 from '../assets/imagen1UPDS.jpg'
 import logoUPDS from '../assets/logo-upds.png'
 import fondoVideoUPDS from '../assets/FondoVideoUpds.mp4'
+import letreroUPDS from '../assets/LetreroUPDS.png'
 
 function Guide() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [showScrollHint, setShowScrollHint] = useState(false)
+  const [scrollHintDirection, setScrollHintDirection] = useState<'up' | 'down'>('down')
+
+  useEffect(() => {
+    let idleTimer: ReturnType<typeof window.setTimeout> | undefined
+
+    const hideHint = () => {
+      setShowScrollHint(false)
+      if (idleTimer) window.clearTimeout(idleTimer)
+    }
+
+    const showHintAfterIdle = () => {
+      hideHint()
+      idleTimer = window.setTimeout(() => {
+        const footer = document.getElementById('guide-footer')
+        const isNearFooter = footer && footer.getBoundingClientRect().top < window.innerHeight + 96
+        const isAtBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 160
+
+        if (isNearFooter || isAtBottom) return
+
+        const passedMiddle = window.scrollY > (document.documentElement.scrollHeight - window.innerHeight) / 2
+        setScrollHintDirection(passedMiddle ? 'up' : 'down')
+        setShowScrollHint(true)
+      }, 2200)
+    }
+
+    window.addEventListener('scroll', showHintAfterIdle, { passive: true })
+    window.addEventListener('touchstart', hideHint, { passive: true })
+    window.addEventListener('resize', showHintAfterIdle)
+    showHintAfterIdle()
+
+    return () => {
+      if (idleTimer) window.clearTimeout(idleTimer)
+      window.removeEventListener('scroll', showHintAfterIdle)
+      window.removeEventListener('touchstart', hideHint)
+      window.removeEventListener('resize', showHintAfterIdle)
+    }
+  }, [])
 
   const scrollToAdvice = () => {
     const adviceSection = document.getElementById('consejos')
@@ -361,6 +400,36 @@ function Guide() {
           </div>
         </div>
       </section>
+
+      <AnimatePresence>
+        {showScrollHint && (
+          <motion.div
+            initial={{ opacity: 0, y: 12, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+            exit={{ opacity: 0, y: 12, scale: 0.96 }}
+            transition={{ duration: 0.22 }}
+            className="pointer-events-none fixed bottom-5 right-5 z-40 flex flex-col items-center gap-0 sm:bottom-7 sm:right-7"
+          >
+            <motion.img
+              src={letreroUPDS}
+              alt=""
+              aria-hidden="true"
+              initial={{ opacity: 0, y: 18, scale: 0.82, rotate: 4 }}
+              animate={{ opacity: 1, y: [0, -4, 0], scale: 1, rotate: [0, -1.5, 0] }}
+              transition={{ opacity: { duration: 0.25 }, scale: { duration: 0.35 }, y: { duration: 2.8, repeat: Infinity, ease: 'easeInOut' }, rotate: { duration: 2.8, repeat: Infinity, ease: 'easeInOut' } }}
+              className="-mb-1 h-auto w-28 mix-blend-screen drop-shadow-[0_8px_14px_rgba(0,21,66,0.8)] sm:w-32"
+            />
+            <div className="isolate flex items-center gap-3 overflow-hidden rounded-2xl border border-[#8bc4f5]/60 bg-gradient-to-br from-[#003366] via-[#0a347c] to-[#2967CD] px-4 py-3 text-xs font-bold text-white shadow-[0_14px_32px_rgba(0,35,85,0.52),inset_0_1px_1px_rgba(255,255,255,0.45)] [transform:perspective(700px)_rotateX(4deg)]" aria-live="polite">
+              <motion.span aria-hidden="true" className="absolute -inset-5 -z-10 bg-gradient-to-r from-[#2967CD] via-[#7dd3fc]/80 to-[#003366] blur-xl" animate={{ x: ['-30%', '30%', '-30%'], opacity: [0.3, 0.7, 0.3] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }} />
+              <span aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(125deg,rgba(255,255,255,0.2),transparent_42%,rgba(0,20,60,0.3))]" />
+              <span className="relative z-10 drop-shadow-sm">{scrollHintDirection === 'down' ? 'Desliza para explorar' : 'Puedes volver arriba'}</span>
+              <motion.span className="relative z-10 flex h-7 w-7 items-center justify-center rounded-xl border border-white/40 bg-white/15 shadow-[inset_0_1px_4px_rgba(255,255,255,0.4)]" animate={{ y: scrollHintDirection === 'down' ? [0, 5, 0] : [0, -5, 0], scale: [1, 1.12, 1] }} transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}>
+                {scrollHintDirection === 'down' ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
+              </motion.span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <PageFooter />
     </div>

@@ -5,7 +5,7 @@ import logoUPDS from '../../assets/logo-upds.png'
 
 function PageFooter() {
   return (
-    <footer className="relative z-10 border-t border-white/20 bg-white/[0.96] px-5 py-12 text-slate-600 shadow-[0_-18px_50px_rgba(3,25,58,0.16)]">
+    <footer id="guide-footer" className="relative z-10 border-t border-white/20 bg-white/[0.96] px-5 py-12 text-slate-600 shadow-[0_-18px_50px_rgba(3,25,58,0.16)]">
       <div className="mx-auto w-full max-w-7xl px-2 sm:px-6">
         <div className="grid gap-8 md:grid-cols-3 items-start">
           <div className="space-y-4">
