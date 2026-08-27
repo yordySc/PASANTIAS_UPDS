@@ -65,7 +65,7 @@ function Guide() {
       <section id="inicio" className="relative overflow-hidden bg-transparent px-5 py-16 sm:py-28 lg:py-32">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 bg-[#061f43]" />
         <video
-          className="pointer-events-none absolute inset-x-0 top-1/2 z-0 h-auto w-full -translate-y-1/2 object-contain object-center sm:inset-0 sm:h-full sm:translate-y-0 sm:object-cover"
+          className="pointer-events-none absolute inset-0 z-0 h-full w-full object-fill object-center"
           src={fondoVideoUPDS}
           autoPlay
           muted
@@ -74,6 +74,7 @@ function Guide() {
           preload="auto"
           aria-hidden="true"
         />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(2,15,37,0.78)_0%,rgba(2,15,37,0.5)_52%,rgba(2,15,37,0.2)_100%)]" />
         
         <div className="relative z-10 mx-auto max-w-7xl min-w-0">
           <div className="grid min-w-0 gap-12 lg:grid-cols-2 lg:items-center">
@@ -119,7 +120,7 @@ function Guide() {
                 initial={{ opacity: 0, y: 25 }} 
                 animate={{ opacity: 1, y: 0 }} 
                 transition={{ delay: 0.4, duration: 0.8 }}
-                className="mx-auto lg:mx-0 max-w-lg text-base sm:text-lg text-sky-100"
+                className="mx-auto max-w-lg rounded-xl bg-slate-950/55 px-4 py-3 text-base text-sky-50 shadow-lg backdrop-blur-sm lg:mx-0 sm:text-lg"
               >
                 Esta guía te acompañará en cada paso: desde la búsqueda hasta el éxito profesional en tus Prácticas Profesionales.
               </motion.p>
@@ -176,7 +177,48 @@ function Guide() {
       <section id="informacion" className="relative overflow-hidden bg-transparent px-5 py-20 sm:py-28 lg:px-8">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(rgba(255,255,255,0.45)_1px,transparent_1px)] [background-size:24px_24px]" />
         <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-12 h-72 w-72 rounded-full bg-cyan-300/20 blur-3xl" />
-        <div className="mx-auto max-w-7xl">
+        {/* Saludos visuales que se descubren al avanzar por la secciÃ³n en mÃ³vil. */}
+        <motion.img
+          src={imagen1}
+          alt=""
+          aria-hidden="true"
+          initial={{ opacity: 0, x: -110, rotate: -24 }}
+          whileInView={{ opacity: 0.9, x: 52, rotate: -12 }}
+          transition={{ type: 'spring', stiffness: 90, damping: 16 }}
+          viewport={{ once: true, amount: 0.65 }}
+          className="pointer-events-none absolute -left-11 top-[8%] z-[1] h-36 w-28 rounded-2xl object-cover shadow-2xl sm:hidden"
+        />
+        <motion.img
+          src={imagen1}
+          alt=""
+          aria-hidden="true"
+          initial={{ opacity: 0, x: 110, rotate: 24 }}
+          whileInView={{ opacity: 0.9, x: -52, rotate: 12 }}
+          transition={{ type: 'spring', stiffness: 90, damping: 16 }}
+          viewport={{ once: true, amount: 0.65 }}
+          className="pointer-events-none absolute -right-11 top-[34%] z-[1] h-40 w-28 rounded-2xl object-cover shadow-2xl sm:hidden"
+        />
+        <motion.img
+          src={imagen1}
+          alt=""
+          aria-hidden="true"
+          initial={{ opacity: 0, x: -110, rotate: -24 }}
+          whileInView={{ opacity: 0.9, x: 52, rotate: -10 }}
+          transition={{ type: 'spring', stiffness: 90, damping: 16 }}
+          viewport={{ once: true, amount: 0.65 }}
+          className="pointer-events-none absolute -left-12 top-[60%] z-[1] h-40 w-28 rounded-2xl object-cover shadow-2xl sm:hidden"
+        />
+        <motion.img
+          src={imagen1}
+          alt=""
+          aria-hidden="true"
+          initial={{ opacity: 0, x: 110, rotate: 24 }}
+          whileInView={{ opacity: 0.9, x: -52, rotate: 10 }}
+          transition={{ type: 'spring', stiffness: 90, damping: 16 }}
+          viewport={{ once: true, amount: 0.65 }}
+          className="pointer-events-none absolute -right-12 bottom-[7%] z-[1] h-36 w-28 rounded-2xl object-cover shadow-2xl sm:hidden"
+        />
+        <div className="relative z-10 mx-auto max-w-7xl">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
             <div className="max-w-2xl">
               <div className="mb-6 inline-flex items-center gap-3 rounded-2xl border border-cyan-200/30 border-l-4 border-l-[#22d3ee] bg-white/10 px-4 py-3 shadow-[0_10px_25px_rgba(0,20,60,0.2)] backdrop-blur-sm">
