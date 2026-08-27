@@ -76,6 +76,10 @@ function Home({ offers }: HomeProps) {
     document.getElementById('directorio')?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const scrollToCategory = (categoryId: string) => {
+    document.getElementById(categoryId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
     <div className="min-h-screen bg-transparent">
       {/* HERO SECTION RENOVADO */}
@@ -158,8 +162,8 @@ function Home({ offers }: HomeProps) {
 
               <div className="mt-8 grid gap-4 md:grid-cols-2">
                 {[
-                  { title: 'Solicitudes activas', text: 'Empresas que solicitan estudiantes para Prácticas Profesionales.', accent: 'from-sky-400 to-cyan-400', icon: Building2, badge: 'Activa' },
-                  { title: 'Empresas con convenio', text: 'Presenta tu carta de compromiso y la institución evaluará tu postulación.', accent: 'from-emerald-400 to-lime-400', icon: AlertCircle, badge: 'Convenio' }
+                  { title: 'Solicitudes activas', text: 'Empresas que solicitan estudiantes para Prácticas Profesionales.', accent: 'from-sky-400 to-cyan-400', icon: Building2, badge: 'Activa', targetId: 'solicitudes-activas' },
+                  { title: 'Empresas con convenio', text: 'Presenta tu carta de compromiso y la institución evaluará tu postulación.', accent: 'from-emerald-400 to-lime-400', icon: AlertCircle, badge: 'Convenio', targetId: 'empresas-convenio' }
                 ].map((item, index) => {
                   const Icon = item.icon
                   return (
@@ -186,10 +190,10 @@ function Home({ offers }: HomeProps) {
                           <h3 className="text-lg font-bold text-white">{item.title}</h3>
                           <p className="mt-2 text-sm leading-6 text-blue-50/80">{item.text}</p>
                         </div>
-                        <div className="mt-6 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#7dd3fc] transition duration-300 group-hover:gap-3">
+                        <button type="button" onClick={() => scrollToCategory(item.targetId)} className="mt-6 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#7dd3fc] transition duration-300 hover:gap-3 focus-visible:gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-200">
                           <span>Ver esta categoría</span>
                           <ChevronRight size={14} />
-                        </div>
+                        </button>
                       </div>
                     </motion.article>
                   )
@@ -263,7 +267,7 @@ function Home({ offers }: HomeProps) {
               </section>
             )}
 
-            <section>
+            <section id="solicitudes-activas" className="scroll-mt-28">
               <div className="mb-8 flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-cyan-400 text-white shadow-md">
                   <Building2 size={20} />
@@ -283,7 +287,7 @@ function Home({ offers }: HomeProps) {
             </section>
 
             {convenios.length > 0 && (
-              <section className="rounded-[24px] border border-slate-200 bg-slate-50/70 p-6 sm:p-8">
+              <section id="empresas-convenio" className="scroll-mt-28 rounded-[24px] border border-slate-200 bg-slate-50/70 p-6 sm:p-8">
                 <div className="mb-8 flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-lime-400 text-white shadow-md">
                     <AlertCircle size={20} />
