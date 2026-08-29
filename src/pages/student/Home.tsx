@@ -83,7 +83,7 @@ function Home({ offers }: HomeProps) {
   return (
     <div className="min-h-screen bg-transparent">
       {/* HERO SECTION RENOVADO */}
-      <section className="relative isolate flex min-h-[70vh] flex-col justify-center overflow-hidden bg-[#003366] px-5 py-16 sm:px-6 lg:py-28">
+      <section className="relative left-1/2 isolate flex min-h-[70vh] w-screen -translate-x-1/2 flex-col justify-center overflow-hidden bg-[#003366] px-5 py-16 sm:px-6 lg:py-28">
         <AnimatedBackground />
         
         {/* Fondo de cuadrícula con desvanecimiento */}
@@ -142,11 +142,11 @@ function Home({ offers }: HomeProps) {
         
         {/* PANEL INFORMATIVO */}
         <Reveal>
-          <div className="relative overflow-hidden rounded-[36px] border border-cyan-200/25 bg-gradient-to-br from-[#003366] via-[#123f83] to-[#2967CD] p-6 text-white shadow-[0_30px_80px_-30px_rgba(2,22,38,0.85)] sm:p-8 lg:p-10">
+          <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden border-y border-cyan-200/25 bg-gradient-to-br from-[#003366] via-[#123f83] to-[#2967CD] px-5 py-10 text-white shadow-[0_20px_50px_-30px_rgba(2,22,38,0.7)] sm:px-8 sm:py-12 lg:px-10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(34,211,238,0.34),transparent_18%),radial-gradient(circle_at_88%_85%,rgba(255,255,255,0.16),transparent_24%),linear-gradient(115deg,transparent_0%,rgba(41,103,205,0.28)_58%,rgba(34,211,238,0.12)_100%)]" />
             <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full border border-cyan-300/20 bg-cyan-300/10 blur-2xl" />
             <div className="absolute -bottom-16 left-1/3 h-44 w-44 rounded-full bg-[#2967CD]/35 blur-3xl" />
-            <div className="relative z-10">
+            <div className="relative z-10 mx-auto max-w-7xl">
               <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div className="max-w-2xl">
                   <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-100 backdrop-blur-sm">
