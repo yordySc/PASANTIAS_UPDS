@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
-import { FileText, Link as LinkIcon, UploadCloud, Video, ImagePlus } from 'lucide-react'
+import { FileText, Link as LinkIcon, UploadCloud, Video, ImagePlus, GraduationCap, Building2, AlignLeft, type LucideIcon } from 'lucide-react'
 import type { CompanyOffer, Career, SuccessStory } from '../../types'
 import { getCareers, addCareer, deleteCareer, getSuccessStories, saveSuccessStory, deleteSuccessStory, uploadSuccessStoryVideo, uploadSuccessStoryBackground, updateSuccessStory } from '../../services/internships'
 import { isSupabaseConfigured } from '../../lib/supabase'
@@ -254,9 +254,9 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h3 className="text-xl font-semibold text-[#003366]">Carreras disponibles</h3>
           <p className="mt-2 text-sm text-slate-600">Gestiona las carreras que aparecen en el filtro del home.</p>
-          <form onSubmit={handleAddCareer} className="mt-4 flex gap-3">
-            <input value={newCareer} onChange={(e) => setNewCareer(e.target.value)} placeholder="Ej. Ingeniería de Sistemas" className="flex-1 rounded-[12px] border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#2967CD]" />
-            <button type="submit" className="rounded-full bg-[#003366] px-4 py-2 text-sm font-semibold text-white">Agregar</button>
+          <form onSubmit={handleAddCareer} className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start">
+            <AdminField label="Nombre de la carrera" icon={GraduationCap} value={newCareer} onChange={setNewCareer} placeholder="Ej. Ingeniería de Sistemas" required />
+            <button type="submit" className="min-h-12 rounded-full bg-[#003366] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#2967CD] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2967CD]">Agregar</button>
           </form>
           <div className="mt-4 space-y-3">
             {loadingCareers ? <p className="text-sm text-slate-500">Cargando carreras…</p> : careers.map((career) => (
@@ -276,16 +276,16 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
           <p className="mt-2 text-sm text-slate-600">Añade experiencias que se mostrarán en la página pública.</p>
           <form onSubmit={handleSaveStory} className="mt-4 space-y-4 rounded-2xl bg-white p-6 shadow-sm">
             <div className="flex items-center gap-3 border-b border-slate-200 pb-3"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#003366] text-white"><FileText size={17} /></span><div><p className="text-sm font-semibold text-slate-800">Contenido del caso</p></div></div>
-            <input value={storyDraft.title} onChange={(e) => setStoryDraft({ ...storyDraft, title: e.target.value })} placeholder="Título" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#2967CD]" />
-            <input value={storyDraft.institution} onChange={(e) => setStoryDraft({ ...storyDraft, institution: e.target.value })} placeholder="Empresa / institución (donde se realizó la pasantía)" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#2967CD]" />
+            <AdminField label="Título del testimonio" icon={FileText} value={storyDraft.title} onChange={(value) => setStoryDraft({ ...storyDraft, title: value })} placeholder="Ej. Mi primera experiencia profesional" required />
+            <AdminField label="Empresa o institución" icon={Building2} value={storyDraft.institution} onChange={(value) => setStoryDraft({ ...storyDraft, institution: value })} placeholder="Dónde se realizó la pasantía" required />
             <div className="flex items-center gap-3">
               <input id="showResult" type="checkbox" checked={showResultField} onChange={(e) => setShowResultField(e.target.checked)} className="h-4 w-4 rounded border-slate-300 text-[#003366]" />
               <label htmlFor="showResult" className="text-sm text-slate-700">Agregar campo "Resultado" (opcional)</label>
             </div>
             {showResultField && (
-              <input value={storyDraft.highlight} onChange={(e) => setStoryDraft({ ...storyDraft, highlight: e.target.value })} placeholder="Resultado (ej. Desarrollo profesional, Contratación parcial)" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#2967CD]" />
+              <AdminField label="Resultado (opcional)" icon={FileText} value={storyDraft.highlight} onChange={(value) => setStoryDraft({ ...storyDraft, highlight: value })} placeholder="Ej. Desarrollo profesional o contratación parcial" />
             )}
-            <textarea value={storyDraft.description} onChange={(e) => setStoryDraft({ ...storyDraft, description: e.target.value })} rows={3} placeholder="Descripción" className="w-full rounded-[12px] border border-[#cfe8ff] bg-[#f3f8ff] px-4 py-3 text-sm outline-none focus:border-[#2967CD]" />
+            <AdminField label="Descripción de la experiencia" icon={AlignLeft} value={storyDraft.description} onChange={(value) => setStoryDraft({ ...storyDraft, description: value })} placeholder="Cuenta brevemente qué aprendió o logró el estudiante." required textarea />
             <label className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-[#2967CD]/50 bg-[#f3f8ff] px-4 py-4 text-sm text-slate-700 transition hover:bg-[#e8f4ff]"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2967CD] text-white"><UploadCloud size={19} /></span><span><span className="flex items-center gap-2 font-semibold text-slate-800"><Video size={16} /> Cargar video</span><span className="mt-1 block text-xs text-slate-600">MP4 o WebM. {storyVideoFile?.name || (isSupabaseConfigured ? 'Selecciona un archivo desde tu equipo.' : 'Requiere Supabase configurado para subir videos.')}</span></span>
               <input type="file" accept="video/*" onChange={(e) => { setStoryVideoFile(e.target.files?.[0] || null); setRemoveStoryVideo(false) }} className="sr-only" disabled={!isSupabaseConfigured} />
             </label>
@@ -369,6 +369,15 @@ function Dashboard({ offers, refreshSuccessStories }: DashboardProps) {
       )}
     </div>
   )
+}
+
+function AdminField({ label, icon: Icon, value, onChange, placeholder, required = false, textarea = false }: { label: string; icon: LucideIcon; value: string; onChange: (value: string) => void; placeholder: string; required?: boolean; textarea?: boolean }) {
+  const [touched, setTouched] = useState(false)
+  const error = required && !value.trim() ? `Completa ${label.toLowerCase()} para continuar.` : ''
+  const className = `w-full rounded-xl border bg-[#f3f8ff] py-3 pl-11 pr-4 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#2967CD] focus:bg-white focus:ring-4 focus:ring-[#2967CD]/15 ${touched && error ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-red-100' : 'border-[#cfe8ff] hover:border-sky-300'}`
+  const update = (nextValue: string) => { setTouched(true); onChange(nextValue) }
+
+  return <label className="block"><span className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"><Icon size={16} className="text-[#2967CD]" />{label}{required && <span className="text-red-500" aria-label="Obligatorio">*</span>}</span><div className="relative"><Icon aria-hidden="true" size={18} className="pointer-events-none absolute left-4 top-3.5 text-[#2967CD]" />{textarea ? <textarea required={required} rows={3} value={value} onBlur={() => setTouched(true)} onChange={(event) => update(event.target.value)} placeholder={placeholder} aria-invalid={Boolean(touched && error)} className={`${className} min-h-28 pl-11`} /> : <input required={required} value={value} onBlur={() => setTouched(true)} onChange={(event) => update(event.target.value)} placeholder={placeholder} aria-invalid={Boolean(touched && error)} className={`${className} min-h-12`} />}</div>{touched && error && <p className="mt-2 text-xs font-medium text-red-600" role="alert">{error}</p>}</label>
 }
 
 export default Dashboard

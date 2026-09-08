@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, MapPin, Sparkles } from 'lucide-react'
 import type { CompanyOffer } from '../../types'
+import imagenEmpresaPredeterminada from '../../assets/imagen1UPDS.jpg'
 
 interface CompanyCardProps {
   offer: CompanyOffer
@@ -11,6 +12,7 @@ interface CompanyCardProps {
 function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
   const isFull = offer.filled >= offer.vacancies
   const availableSpots = Math.max(0, offer.vacancies - offer.filled)
+  const logoSrc = offer.logo?.startsWith('http') ? offer.logo : imagenEmpresaPredeterminada
   const mapHref = (() => {
     const raw = offer.mapUrl?.trim()
     if (!raw) return `https://www.google.com/maps?q=${encodeURIComponent(offer.address)}`
@@ -46,7 +48,7 @@ function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
             </div>
           </div>
           <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#2967CD]/20 bg-[#2967CD]/[0.06] text-lg font-semibold text-[#003366] sm:h-16 sm:w-16">
-            {offer.logo.startsWith('http') ? <img src={offer.logo} alt={`Logo de ${offer.institution}`} className="h-full w-full object-cover" /> : offer.logo}
+            <img src={logoSrc} alt={offer.logo ? `Logo de ${offer.institution}` : `Imagen referencial de ${offer.institution}`} className="h-full w-full object-cover" />
           </div>
         </div>
 

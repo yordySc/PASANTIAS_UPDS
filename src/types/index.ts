@@ -14,6 +14,9 @@ export interface CompanyOffer {
   immediateAcceptance: boolean
   mapUrl: string
   expiresAt?: string
+  agreementSignedAt?: string
+  agreementValidUntil?: string
+  referenceNumbers?: string
 }
 
 export interface SuccessStory {

@@ -21,14 +21,30 @@ const fallbackStories: SuccessStory[] = [
   },
 ]
 
-type OfferRow = { id: string; company_id: string; institution: string; description: string; address: string; map_url: string; logo: string | null; type: string; vacancies: number; filled: number; visible: boolean; immediate_acceptance: boolean; expires_at: string | null; status: 'vigente' | 'no-vigente'; careers: string[] }
+type OfferRow = { id: string; company_id: string; institution: string; description: string | null; address: string; map_url: string; logo: string | null; type: string; vacancies: number; filled: number; visible: boolean; immediate_acceptance: boolean; expires_at: string | null; status: 'vigente' | 'no-vigente'; careers: string[] }
+type CompanyAdminDetailsRow = { agreement_signed_at: string | null; agreement_valid_until: string | null; reference_numbers: string | null }
 
-const toOffer = (row: OfferRow): CompanyOffer => ({ id: row.id, companyId: row.company_id, institution: row.institution, description: row.description, address: row.address, mapUrl: row.map_url, logo: row.logo || '', type: row.type, vacancies: row.vacancies, filled: row.filled, visible: row.visible, immediateAcceptance: row.immediate_acceptance, expiresAt: row.expires_at || '', status: row.status, careers: row.careers })
+const toOffer = (row: OfferRow): CompanyOffer => ({ id: row.id, companyId: row.company_id, institution: row.institution, description: row.description || '', address: row.address, mapUrl: row.map_url, logo: row.logo || '', type: row.type, vacancies: row.vacancies, filled: row.filled, visible: row.visible, immediateAcceptance: row.immediate_acceptance, expiresAt: row.expires_at || '', status: row.status, careers: row.careers })
 
 export async function getOffers() {
   const { data, error } = await supabase.from('internship_offers_with_details').select('*').order('expires_at')
   if (error) throw error
   return (data as OfferRow[]).map(toOffer)
+}
+
+export async function getCompanyAdminDetails(companyId: string): Promise<Pick<CompanyOffer, 'agreementSignedAt' | 'agreementValidUntil' | 'referenceNumbers'>> {
+  const { data, error } = await supabase
+    .from('company_admin_details')
+    .select('agreement_signed_at, agreement_valid_until, reference_numbers')
+    .eq('company_id', companyId)
+    .maybeSingle()
+  if (error) throw error
+  const details = data as CompanyAdminDetailsRow | null
+  return {
+    agreementSignedAt: details?.agreement_signed_at || '',
+    agreementValidUntil: details?.agreement_valid_until || '',
+    referenceNumbers: details?.reference_numbers || '',
+  }
 }
 
 export async function getCareers(): Promise<Career[]> {
@@ -131,6 +147,13 @@ export async function saveOffer(offer: Omit<CompanyOffer, 'id' | 'companyId'>, e
   let companyId = existing?.companyId
   if (companyId) { const { error } = await supabase.from('companies').update(companyPayload).eq('id', companyId); if (error) throw error }
   else { const { data, error } = await supabase.from('companies').insert(companyPayload).select('id').single(); if (error) throw error; companyId = data.id }
+  const { error: adminDetailsError } = await supabase.from('company_admin_details').upsert({
+    company_id: companyId,
+    agreement_signed_at: offer.agreementSignedAt || null,
+    agreement_valid_until: offer.agreementValidUntil || null,
+    reference_numbers: offer.referenceNumbers?.trim() || null,
+  }, { onConflict: 'company_id' })
+  if (adminDetailsError) throw adminDetailsError
   const careerIds = await resolveCareerIds(offer.careers)
   const { error: deleteError } = await supabase.from('company_careers').delete().eq('company_id', companyId)
   if (deleteError) throw deleteError

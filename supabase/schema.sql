@@ -31,7 +31,7 @@ create table if not exists public.careers (
 create table if not exists public.companies (
   id uuid primary key default gen_random_uuid(),
   name text not null,
-  description text not null,
+  description text,
   address text not null,
   map_url text not null,
   logo_url text,
@@ -44,6 +44,18 @@ create table if not exists public.company_careers (
   company_id uuid not null references public.companies(id) on delete cascade,
   career_id uuid not null references public.careers(id) on delete restrict,
   primary key (company_id, career_id)
+);
+
+-- Información privada: no se publica en la vista de ofertas.
+create table if not exists public.company_admin_details (
+  company_id uuid primary key references public.companies(id) on delete cascade,
+  agreement_signed_at date,
+  agreement_valid_until date,
+  reference_numbers text,
+  updated_at timestamptz not null default now(),
+  constraint agreement_dates_are_valid check (
+    agreement_signed_at is null or agreement_valid_until is null or agreement_valid_until >= agreement_signed_at
+  )
 );
 
 create table if not exists public.internship_offers (
@@ -125,6 +137,12 @@ returns trigger language plpgsql as $$ begin new.updated_at = now(); return new;
 
 create trigger companies_updated_at before update on public.companies for each row execute function public.set_updated_at();
 create trigger offers_updated_at before update on public.internship_offers for each row execute function public.set_updated_at();
+create trigger company_admin_details_updated_at before update on public.company_admin_details for each row execute function public.set_updated_at();
+
+alter table public.company_admin_details enable row level security;
+create policy "Administradores gestionan datos internos de empresas"
+on public.company_admin_details for all to authenticated
+using (public.is_admin()) with check (public.is_admin());
 
 -- 5. VISTAS
 create view public.internship_offers_with_details as
