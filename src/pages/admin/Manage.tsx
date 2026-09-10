@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type Dispatch, type FormEvent, type SetStateAction } from 'react'
 import { motion } from 'framer-motion'
-import { BriefcaseBusiness, Sparkles, PlusCircle, Trash2, PencilLine, BadgeCheck, CircleAlert, ImagePlus, FileText, ChevronDown, ChevronLeft, ChevronRight, LockKeyhole, CalendarDays, UsersRound } from 'lucide-react'
+import { BriefcaseBusiness, Sparkles, PlusCircle, Trash2, PencilLine, BadgeCheck, CircleAlert, ImagePlus, FileText, ChevronDown, ChevronLeft, ChevronRight, LockKeyhole, CalendarDays } from 'lucide-react'
 import type { Career, CompanyOffer } from '../../types'
 import { isSupabaseConfigured } from '../../lib/supabase'
 import { deleteOffer, getCareers, getCompanyAdminDetails, saveOffer, uploadLogo } from '../../services/internships'
@@ -122,6 +122,12 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
     }))
   }
 
+  const toggleAllCareers = () => {
+    const allCareerNames = careers.map((career) => career.name)
+    const hasAllCareers = allCareerNames.length > 0 && allCareerNames.every((name) => draft.careers.includes(name))
+    setDraft((current) => ({ ...current, careers: hasAllCareers ? [] : allCareerNames }))
+  }
+
 
   const stats = useMemo(() => ({
     publicadas: offers.filter((offer) => offer.visible).length,
@@ -200,7 +206,8 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
             <div className="rounded-[22px] border border-slate-200 bg-white p-6">
               <p className="text-sm font-semibold text-slate-800">¿A qué carrera va dirigida?</p>
               <p className="mt-1 text-sm text-slate-500">Selecciona una o varias carreras según el perfil que necesita esta empresa.</p>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between"><div className="text-xs"><span className="font-semibold text-[#2967CD]">{draft.careers.length} {draft.careers.length === 1 ? 'carrera seleccionada' : 'carreras seleccionadas'}</span><span className="ml-2 text-slate-400">Puedes elegir una o varias</span></div><button type="button" onClick={toggleAllCareers} disabled={!careers.length} className="min-h-10 rounded-xl border border-[#2967CD]/25 bg-[#f3f8ff] px-3 py-2 text-xs font-bold text-[#003366] transition hover:border-[#2967CD] hover:bg-[#e8f4ff] disabled:cursor-not-allowed disabled:opacity-50">{careers.length && careers.every((career) => draft.careers.includes(career.name)) ? 'Quitar todas' : 'Seleccionar todas'}</button></div>
+              <div className="mt-3 flex flex-wrap gap-2">
                 {loadingCareers ? <p className="text-sm text-slate-500">Cargando carreras…</p> : careers.length ? careers.map((career) => (
                   <label key={career.id} className={`flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-sm ${draft.careers.includes(career.name) ? 'border-[#003366] bg-[#003366] text-white' : 'border-slate-200 bg-slate-50 text-slate-700'}`}>
                     <input type="checkbox" checked={draft.careers.includes(career.name)} onChange={() => toggleCareer(career.name)} className="h-4 w-4 rounded border-slate-300 text-[#003366] focus:ring-[#003366]" />
@@ -210,14 +217,8 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
               </div>
             </div>
             <div className="rounded-[22px] border border-[#b9d8f4] bg-gradient-to-br from-[#edf7ff] to-white p-5 shadow-[inset_4px_4px_10px_rgba(0,51,102,0.06),inset_-4px_-4px_10px_rgba(255,255,255,0.9)]">
-              <div className="mb-4 flex items-start justify-between gap-3">
-                <div><p className="text-sm font-bold text-[#003366]">Control de cupos</p><p className="mt-1 text-xs text-slate-500">Define libremente el total. Los ocupados no pueden superar esa cantidad.</p></div>
-                <span className="rounded-full bg-[#003366] px-3 py-1 text-xs font-bold text-white">{draft.vacancies - draft.filled} libres</span>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Cupos totales" type="number" value={String(draft.vacancies)} change={(value) => { const vacancies = Math.max(1, Number(value) || 1); setDraft({ ...draft, vacancies, filled: Math.min(draft.filled, vacancies) }) }} required description="Indica la cantidad total disponible." />
-                <Field label="Cupos ocupados" type="number" value={String(draft.filled)} change={(value) => setDraft({ ...draft, filled: Math.min(draft.vacancies, Math.max(0, Number(value) || 0)) })} required max={String(draft.vacancies)} description={`Entre 0 y ${draft.vacancies}.`} />
-              </div>
+              <div className="flex items-start justify-between gap-3"><div><p className="text-sm font-bold text-[#003366]">Disponibilidad de cupos</p><p className="mt-1 text-xs leading-5 text-slate-500">Indica si la empresa recibe estudiantes en este momento.</p></div><span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold ${draft.filled < draft.vacancies ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}><span className={`h-2.5 w-2.5 rounded-full ${draft.filled < draft.vacancies ? 'bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.16)]' : 'bg-rose-500 shadow-[0_0_0_4px_rgba(244,63,94,0.14)]'}`} />{draft.filled < draft.vacancies ? 'Hay cupos disponibles' : 'No hay cupos'}</span></div>
+              <div className="mt-5 grid grid-cols-2 gap-3"><button type="button" onClick={() => setDraft({ ...draft, vacancies: Math.max(1, draft.vacancies), filled: 0 })} aria-pressed={draft.filled < draft.vacancies} className={`min-h-20 rounded-2xl border p-4 text-left transition ${draft.filled < draft.vacancies ? 'border-emerald-500 bg-emerald-50 shadow-[0_8px_18px_-12px_rgba(16,185,129,0.8)]' : 'border-slate-200 bg-white hover:border-emerald-300'}`}><span className="flex items-center gap-2 text-sm font-bold text-emerald-700"><span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />Hay cupos</span><span className="mt-1 block text-xs leading-5 text-slate-500">Visible como disponible para estudiantes.</span></button><button type="button" onClick={() => setDraft({ ...draft, vacancies: Math.max(1, draft.vacancies), filled: Math.max(1, draft.vacancies) })} aria-pressed={draft.filled >= draft.vacancies} className={`min-h-20 rounded-2xl border p-4 text-left transition ${draft.filled >= draft.vacancies ? 'border-rose-500 bg-rose-50 shadow-[0_8px_18px_-12px_rgba(244,63,94,0.7)]' : 'border-slate-200 bg-white hover:border-rose-300'}`}><span className="flex items-center gap-2 text-sm font-bold text-rose-700"><span className="h-2.5 w-2.5 rounded-full bg-rose-500" />Sin cupos</span><span className="mt-1 block text-xs leading-5 text-slate-500">La oferta queda marcada como completa.</span></button></div>
             </div>
             <div className="space-y-3 rounded-[22px] border border-slate-200 bg-white p-5">
               <label className="flex items-center gap-3 rounded-[16px] bg-slate-50 px-3 py-3 text-sm text-slate-700"><input type="checkbox" checked={draft.visible} onChange={(event) => setDraft({ ...draft, visible: event.target.checked })} className="h-4 w-4 rounded border-slate-300 text-[#003366] focus:ring-[#003366]" />Mostrar en la web</label>
@@ -251,11 +252,11 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
         <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-[#003366] via-[#2967CD] to-cyan-400" />
         <div className="flex flex-col gap-4">
           <div className="[&>div.mt-4.inline-flex]:hidden [&>p.mt-2]:hidden">
-            <div className="flex min-w-0 items-start gap-3"><div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#2967CD]/20 bg-gradient-to-br from-[#e8f4ff] to-white text-[#003366] shadow-sm"><img src={offer.logo?.startsWith('http') ? offer.logo : imagenEmpresaPredeterminada} alt={offer.logo ? `Logo de ${offer.institution}` : `Imagen referencial de ${offer.institution}`} className="h-full w-full object-cover" /></div><div className="min-w-0"><div className="inline-flex items-center gap-1.5 rounded-full border border-[#2967CD]/15 bg-[#2967CD]/[0.06] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#003366]"><Sparkles size={11} />{offer.type}</div><h4 className="mt-1.5 truncate text-base font-bold text-[#003366]" title={offer.institution}>{offer.institution}</h4><p className="mt-0.5 line-clamp-1 text-xs text-slate-500">{offer.careers.join(' · ') || 'Sin carreras asignadas'}</p></div></div>
-            <p className="mt-2 text-sm text-slate-600">{offer.careers.join(', ')} · {offer.filled}/{offer.vacancies} cupos · {offer.type}</p>
+            <div className="flex min-w-0 items-start gap-3"><div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#2967CD]/20 bg-gradient-to-br from-[#e8f4ff] to-white text-[#003366] shadow-sm"><img src={offer.logo?.startsWith('http') ? offer.logo : imagenEmpresaPredeterminada} alt={offer.logo ? `Logo de ${offer.institution}` : `Imagen referencial de ${offer.institution}`} className="h-full w-full object-contain p-1.5" /></div><div className="min-w-0"><div className="inline-flex items-center gap-1.5 rounded-full border border-[#2967CD]/15 bg-[#2967CD]/[0.06] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#003366]"><Sparkles size={11} />{offer.type}</div><h4 className="mt-1.5 truncate text-base font-bold text-[#003366]" title={offer.institution}>{offer.institution}</h4><p className="mt-0.5 line-clamp-1 text-xs text-slate-500">{offer.careers.join(' · ') || 'Sin carreras asignadas'}</p></div></div>
+            <p className="mt-2 text-sm text-slate-600">{offer.careers.join(', ') || 'Sin carreras asignadas'}</p>
             <p className="mt-3 text-sm"><span className={`rounded-full px-3 py-1 ${expired(offer) ? 'bg-amber-100 text-amber-700' : offer.visible ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}`}>{expired(offer) ? 'Fuera de vigencia' : offer.visible ? 'Publicada' : 'Oculta'}</span></p>
           <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-sky-100 bg-white px-3 py-2 text-sm text-slate-700"><CalendarDays size={16} className="text-[#2967CD]" /><span><span className="font-semibold text-[#003366]">Vigente hasta:</span> {offer.expiresAt ? toDate(offer.expiresAt).toLocaleDateString('es-BO', { day: '2-digit', month: 'long', year: 'numeric' }) : 'Sin fecha registrada'}</span></div>
-            <div className="mt-4 grid grid-cols-2 gap-2"><div className="rounded-2xl bg-[#f3f8ff] p-3"><p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500"><UsersRound size={13} className="text-[#2967CD]" /> Cupos</p><p className="mt-1 text-lg font-black text-[#003366]"><span className={offer.filled >= offer.vacancies ? 'text-amber-600' : 'text-emerald-600'}>{Math.max(0, offer.vacancies - offer.filled)}</span> <span className="text-xs font-semibold text-slate-500">disponibles</span></p><p className="text-xs text-slate-500">{offer.filled}/{offer.vacancies} asignados</p></div><div className="rounded-2xl bg-[#f3f8ff] p-3"><p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500"><CalendarDays size={13} className="text-[#2967CD]" /> Vigencia</p><p className="mt-1 text-sm font-bold leading-5 text-[#003366]">{offer.expiresAt ? toDate(offer.expiresAt).toLocaleDateString('es-BO', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Sin fecha'}</p><p className="text-xs text-slate-500">Vigente hasta</p></div></div>
+            <div className="mt-4 grid grid-cols-2 gap-2"><div className={`rounded-2xl p-3 ${offer.filled >= offer.vacancies ? 'bg-rose-50' : 'bg-emerald-50'}`}><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Disponibilidad</p><p className={`mt-2 flex items-center gap-2 text-sm font-black ${offer.filled >= offer.vacancies ? 'text-rose-700' : 'text-emerald-700'}`}><span className={`h-2.5 w-2.5 rounded-full ${offer.filled >= offer.vacancies ? 'bg-rose-500 shadow-[0_0_0_4px_rgba(244,63,94,0.14)]' : 'bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.16)]'}`} />{offer.filled >= offer.vacancies ? 'Sin cupos' : 'Hay cupos'}</p><p className="mt-1 text-xs text-slate-500">Estado para estudiantes</p></div><div className="rounded-2xl bg-[#f3f8ff] p-3"><p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500"><CalendarDays size={13} className="text-[#2967CD]" /> Vigencia</p><p className="mt-1 text-sm font-bold leading-5 text-[#003366]">{offer.expiresAt ? toDate(offer.expiresAt).toLocaleDateString('es-BO', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Sin fecha'}</p><p className="text-xs text-slate-500">Vigente hasta</p></div></div>
           </div>
           <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-3">
             <button onClick={() => edit(offer)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#003366] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#2967CD]"><PencilLine size={16} /> Editar</button>
@@ -287,9 +288,25 @@ const toDate = (value: string) => {
 
 const toIsoDate = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 
+const formatDateForInput = (date: Date) => `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+
+const parseTypedDate = (value: string) => {
+  const normalized = value.trim()
+  const match = normalized.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/)
+  if (!match) return null
+  const [, dayText, monthText, yearText] = match
+  const day = Number(dayText)
+  const month = Number(monthText)
+  const year = Number(yearText)
+  const date = new Date(year, month - 1, day)
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null
+}
+
 function DateField({ label, value, onChange, description, minDate }: { label: string; value: string; onChange: (value: string) => void; description: string; minDate?: string }) {
   const [open, setOpen] = useState(false)
   const [viewDate, setViewDate] = useState(() => toDate(value))
+  const [typedDate, setTypedDate] = useState(() => value ? formatDateForInput(toDate(value)) : '')
+  const [dateError, setDateError] = useState('')
   const selectedDate = value ? toDate(value) : null
   const min = minDate ? toDate(minDate) : null
   const firstDay = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1)
@@ -297,17 +314,30 @@ function DateField({ label, value, onChange, description, minDate }: { label: st
   const today = toIsoDate(new Date())
   const years = Array.from({ length: 41 }, (_, index) => new Date().getFullYear() - 20 + index)
 
-  useEffect(() => { if (value) setViewDate(toDate(value)) }, [value])
+  useEffect(() => { if (value) { setViewDate(toDate(value)); setTypedDate(formatDateForInput(toDate(value))) } }, [value])
 
   const choose = (date: Date) => {
     if (min && date < new Date(min.getFullYear(), min.getMonth(), min.getDate())) return
     onChange(toIsoDate(date))
+    setTypedDate(formatDateForInput(date))
+    setDateError('')
     setOpen(false)
+  }
+
+  const handleTypedDate = (nextValue: string) => {
+    setTypedDate(nextValue)
+    if (!nextValue.trim()) { onChange(''); setDateError(''); return }
+    const parsed = parseTypedDate(nextValue)
+    if (!parsed) { setDateError('Usa el formato día/mes/año, por ejemplo 13/3/2025.'); return }
+    if (min && parsed < new Date(min.getFullYear(), min.getMonth(), min.getDate())) { setDateError('La fecha no puede ser anterior a la fecha de firma.'); return }
+    setDateError('')
+    onChange(toIsoDate(parsed))
+    setViewDate(parsed)
   }
 
   const formattedValue = selectedDate ? selectedDate.toLocaleDateString('es-BO', { day: '2-digit', month: 'long', year: 'numeric' }) : 'Seleccionar fecha'
 
-  return <div className="relative"><span className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"><CalendarDays size={16} className="text-[#2967CD]" />{label}</span><p className="mb-2 text-xs leading-5 text-slate-500">{description}</p><button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`flex min-h-12 w-full items-center justify-between rounded-[18px] border bg-white px-4 py-3 text-left text-sm shadow-sm transition ${open ? 'border-[#2967CD] ring-4 ring-[#2967CD]/15' : 'border-slate-200 hover:border-sky-300'}`}><span className={selectedDate ? 'font-semibold text-[#003366]' : 'text-slate-400'}>{formattedValue}</span><CalendarDays size={19} className="text-[#2967CD]" /></button>{open && <div className="absolute z-30 mt-2 w-full min-w-[18rem] rounded-[22px] border border-sky-200 bg-white p-4 shadow-[0_20px_45px_rgba(0,51,102,0.2)]">
+  return <div className="relative"><span className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"><CalendarDays size={16} className="text-[#2967CD]" />{label}</span><p className="mb-2 text-xs leading-5 text-slate-500">{description}</p><div className="flex gap-2"><label className="min-w-0 flex-1"><span className="sr-only">Escribir fecha</span><input type="text" inputMode="numeric" value={typedDate} onChange={(event) => handleTypedDate(event.target.value)} placeholder="Ej. 13/3/2025" aria-invalid={Boolean(dateError)} className={`min-h-12 w-full rounded-[18px] border bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:ring-4 ${dateError ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : 'border-slate-200 focus:border-[#2967CD] focus:ring-[#2967CD]/15'}`} /></label><button type="button" onClick={() => setOpen((current) => !current)} aria-label="Abrir calendario" aria-expanded={open} className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] border bg-white shadow-sm transition ${open ? 'border-[#2967CD] text-[#003366] ring-4 ring-[#2967CD]/15' : 'border-slate-200 text-[#2967CD] hover:border-sky-300'}`}><CalendarDays size={19} /></button></div>{dateError ? <p className="mt-2 text-xs font-medium text-red-600" role="alert">{dateError}</p> : <p className="mt-2 text-xs text-slate-400">Escribe o pega una fecha (día/mes/año), o usa el calendario.</p>}{open && <div className="absolute z-30 mt-2 w-full min-w-[18rem] rounded-[22px] border border-sky-200 bg-white p-4 shadow-[0_20px_45px_rgba(0,51,102,0.2)]">
     <div className="mb-4 flex items-center justify-between gap-2"><button type="button" onClick={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1))} aria-label="Mes anterior" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[#003366] transition hover:bg-sky-100"><ChevronLeft size={20} /></button><div className="flex min-w-0 gap-1.5"><select aria-label="Seleccionar mes" value={viewDate.getMonth()} onChange={(event) => setViewDate(new Date(viewDate.getFullYear(), Number(event.target.value), 1))} className="min-w-0 rounded-lg border border-sky-100 bg-sky-50 px-2 py-2 text-xs font-bold text-[#003366] outline-none focus:border-[#2967CD]">{MONTHS.map((month, index) => <option key={month} value={index}>{month}</option>)}</select><select aria-label="Seleccionar año" value={viewDate.getFullYear()} onChange={(event) => setViewDate(new Date(Number(event.target.value), viewDate.getMonth(), 1))} className="w-20 rounded-lg border border-sky-100 bg-sky-50 px-2 py-2 text-xs font-bold text-[#003366] outline-none focus:border-[#2967CD]">{years.map((year) => <option key={year} value={year}>{year}</option>)}</select></div><button type="button" onClick={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1))} aria-label="Mes siguiente" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[#003366] transition hover:bg-sky-100"><ChevronRight size={20} /></button></div>
     <div className="grid grid-cols-7 gap-1 text-center text-xs">{WEEKDAYS.map((day) => <span key={day} className="py-2 font-bold text-[#2967CD]">{day}</span>)}{Array.from({ length: 42 }, (_, index) => {
       const date = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + index)
@@ -317,7 +347,7 @@ function DateField({ label, value, onChange, description, minDate }: { label: st
       const selected = iso === value
       return <button key={iso} type="button" disabled={disabled} onClick={() => choose(date)} className={`mx-auto flex h-9 w-9 items-center justify-center rounded-xl font-semibold transition ${selected ? 'bg-[#003366] text-white shadow-md' : iso === today ? 'border border-[#2967CD] text-[#2967CD]' : inMonth ? 'text-slate-700 hover:bg-sky-100' : 'text-slate-300'} disabled:cursor-not-allowed disabled:opacity-30`}>{date.getDate()}</button>
     })}</div>
-    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs font-semibold"><button type="button" onClick={() => { onChange(''); setOpen(false) }} className="rounded-lg px-2 py-2 text-slate-500 transition hover:bg-slate-100">Limpiar</button><button type="button" onClick={() => { const now = new Date(); setViewDate(now); choose(now) }} className="rounded-lg bg-sky-50 px-3 py-2 text-[#2967CD] transition hover:bg-sky-100">Hoy</button></div>
+    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs font-semibold"><button type="button" onClick={() => { onChange(''); setTypedDate(''); setDateError(''); setOpen(false) }} className="rounded-lg px-2 py-2 text-slate-500 transition hover:bg-slate-100">Limpiar</button><button type="button" onClick={() => { const now = new Date(); setViewDate(now); choose(now) }} className="rounded-lg bg-sky-50 px-3 py-2 text-[#2967CD] transition hover:bg-sky-100">Hoy</button></div>
   </div>}</div>
 }
 export default Manage

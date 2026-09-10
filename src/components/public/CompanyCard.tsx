@@ -11,7 +11,6 @@ interface CompanyCardProps {
 
 function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
   const isFull = offer.filled >= offer.vacancies
-  const availableSpots = Math.max(0, offer.vacancies - offer.filled)
   const logoSrc = offer.logo?.startsWith('http') ? offer.logo : imagenEmpresaPredeterminada
   const mapHref = (() => {
     const raw = offer.mapUrl?.trim()
@@ -29,46 +28,46 @@ function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
       whileTap={{ scale: 0.99 }}
-      className="group relative w-full min-w-0 overflow-hidden rounded-[30px] border border-[#2967CD]/20 bg-white shadow-[0_24px_70px_-34px_rgba(0,142,196,0.28)] transition-shadow duration-300 hover:shadow-[0_28px_80px_-34px_rgba(0,142,196,0.42)]"
+      className="group relative w-full min-w-0 overflow-hidden rounded-[24px] border border-[#2967CD]/20 bg-white shadow-[0_16px_42px_-30px_rgba(0,142,196,0.32)] transition-shadow duration-300 hover:shadow-[0_22px_50px_-28px_rgba(0,142,196,0.45)]"
     >
       <div className="absolute inset-y-0 left-0 w-1 bg-[#2967CD]" />
-      <div className="relative space-y-5 p-5 pl-6 sm:p-7 sm:pl-8">
-        <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0 space-y-3">
+      <div className="relative space-y-4 p-4 pl-5 sm:p-5 sm:pl-6">
+        <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#2967CD]/20 bg-[#2967CD]/[0.06] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#003366]">
               <Sparkles size={12} />
               {offer.type}
             </div>
             <div>
-              <h3 className="break-words text-xl font-bold tracking-tight text-[#003366] sm:text-2xl">{offer.institution}</h3>
+              <h3 className="line-clamp-2 break-words text-lg font-bold tracking-tight text-[#003366] sm:text-xl">{offer.institution}</h3>
               <p className="mt-2 flex min-w-0 items-start gap-2 text-sm text-slate-500">
                 <MapPin size={15} className="shrink-0 text-[#2967CD]" />
                 <span className="break-words">{offer.address}</span>
               </p>
             </div>
           </div>
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#2967CD]/20 bg-[#2967CD]/[0.06] text-lg font-semibold text-[#003366] sm:h-16 sm:w-16">
-            <img src={logoSrc} alt={offer.logo ? `Logo de ${offer.institution}` : `Imagen referencial de ${offer.institution}`} className="h-full w-full object-cover" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#2967CD]/20 bg-[#2967CD]/[0.06] text-lg font-semibold text-[#003366]">
+            <img src={logoSrc} alt={offer.logo ? `Logo de ${offer.institution}` : `Imagen referencial de ${offer.institution}`} className="h-full w-full object-contain p-1.5" />
           </div>
         </div>
 
-        <div className="border-y border-slate-100 py-5">
-          <p className="text-sm leading-7 text-slate-600">{offer.description}</p>
-          <div className="mt-4 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none]">
-            {offer.careers.map((career) => (
+        <div className="border-y border-slate-100 py-3">
+          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Carreras solicitadas</p>
+          <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none]">
+            {offer.careers.length ? offer.careers.map((career) => (
               <span key={career} className="shrink-0 rounded-full border border-[#2967CD]/15 bg-[#2967CD]/[0.06] px-3 py-1.5 text-xs font-semibold text-[#003366]">
                 {career}
               </span>
-            ))}
+            )) : <span className="text-xs text-slate-500">No se especificaron carreras.</span>}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 rounded-2xl bg-slate-50 px-4 py-4 sm:px-5">
+        <div className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Cupos disponibles</p>
-            <p className="mt-1 text-2xl font-black tracking-tight text-[#003366]">{availableSpots} <span className="text-sm font-bold">cupos</span></p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Disponibilidad</p>
+            <p className={`mt-0.5 flex items-center gap-2 text-sm font-black ${isFull ? 'text-rose-700' : 'text-emerald-700'}`}><span className={`h-2.5 w-2.5 rounded-full ${isFull ? 'bg-rose-500 shadow-[0_0_0_4px_rgba(244,63,94,0.14)]' : 'bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.16)]'}`} />{isFull ? 'Sin cupos' : 'Hay cupos'}</p>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
           {offer.immediateAcceptance && (
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">Aceptación inmediata</span>
           )}
@@ -79,7 +78,7 @@ function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-slate-500">{offer.filled}/{offer.vacancies} cupos asignados</p>
+          <p className="text-xs text-slate-500">Consulta los detalles para postular.</p>
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => onToggle(offer.id)}
@@ -95,6 +94,7 @@ function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
               <div className="space-y-4 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
                 <div className="rounded-[20px] bg-white p-4">
+                  {offer.description && <><p className="text-sm font-semibold text-[#003366]">Sobre la oportunidad</p><p className="mt-2 text-sm leading-7 text-slate-600">{offer.description}</p><div className="my-4 h-px bg-slate-100" /></>}
                   <p className="text-sm font-semibold text-[#003366]">Perfil que buscan</p>
                   <p className="mt-2 text-sm leading-7 text-slate-600">
                     {offer.institution} está buscando estudiantes de {offer.careers.length ? offer.careers.join(', ') : 'diversas carreras'} para participar en prácticas profesionales con compromiso, aprendizaje y trabajo en equipo.
@@ -103,9 +103,9 @@ function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
 
                 <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
                   <div className="rounded-[20px] bg-white p-4">
-                    <p className="text-sm font-semibold text-[#003366]">Cupos disponibles</p>
-                    <p className="mt-2 text-3xl font-semibold text-[#003366]">{availableSpots}</p>
-                    <p className="mt-1 text-sm text-slate-600">{offer.filled}/{offer.vacancies} cupos asignados</p>
+                    <p className="text-sm font-semibold text-[#003366]">Disponibilidad</p>
+                    <p className={`mt-2 flex items-center gap-2 text-lg font-bold ${isFull ? 'text-rose-700' : 'text-emerald-700'}`}><span className={`h-2.5 w-2.5 rounded-full ${isFull ? 'bg-rose-500' : 'bg-emerald-500'}`} />{isFull ? 'Sin cupos disponibles' : 'Hay cupos disponibles'}</p>
+                    <p className="mt-1 text-sm text-slate-600">Confirma los requisitos antes de postular.</p>
                   </div>
                   <div className="rounded-[20px] bg-white p-4">
                     <p className="text-sm font-semibold text-[#003366]">Ubicación</p>

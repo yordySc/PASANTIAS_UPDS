@@ -277,7 +277,7 @@ function Home({ offers }: HomeProps) {
                   <p className="text-sm text-blue-100">Procesos activos con selección vigente.</p>
                 </div>
               </div>
-              <div className="space-y-6">
+              <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
                 {directas.map((o: CompanyOffer) => (
                   <div key={o.id} className="min-w-0">
                     <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
@@ -297,7 +297,7 @@ function Home({ offers }: HomeProps) {
                     <p className="text-sm text-slate-500">Opciones con procesos más flexibles.</p>
                   </div>
                 </div>
-                <div className="space-y-4 opacity-90">
+                <div className="grid gap-4 opacity-90 md:grid-cols-2 2xl:grid-cols-3">
                   {convenios.map((o: CompanyOffer) => (
                     <div key={o.id} className="min-w-0">
                       <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
