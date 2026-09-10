@@ -42,7 +42,7 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
     if (!isSupabaseConfigured || !offer.companyId) return
     try {
       const details = await getCompanyAdminDetails(offer.companyId)
-      setDraft((current) => ({ ...current, ...details }))
+      setDraft((current) => ({ ...current, ...details, expiresAt: details.agreementValidUntil || current.expiresAt }))
     } catch (error) {
       setMessage(error instanceof Error ? `No se pudieron cargar los datos internos: ${error.message}` : 'No se pudieron cargar los datos internos.')
     }
@@ -87,7 +87,7 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
 
     try {
       const logo = logoFile && isSupabaseConfigured ? await uploadLogo(logoFile) : draft.logo
-      const expiresAt = draft.expiresAt || new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+      const expiresAt = draft.agreementValidUntil || draft.expiresAt || new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
       const data = { ...draft, logo: logo || draft.logo, careers: careersList, status: 'vigente' as const, expiresAt }
       const nextOffer = { ...data, id: editing?.id || crypto.randomUUID(), companyId: editing?.companyId }
 
@@ -180,8 +180,8 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
             <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#003366]">Obligatorios: nombre de la empresa, dirección, cupos y al menos una carrera. El resto se puede completar después.</p>
           </div>
         </div>
-        <div className="grid gap-7 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="space-y-6">
+        <div className="grid min-w-0 gap-7 2xl:grid-cols-[minmax(0,1.15fr)_minmax(22rem,0.85fr)]">
+          <div className="min-w-0 space-y-6">
             <div className="grid gap-5 md:grid-cols-2">
               <Field label="Nombre de la empresa" value={draft.institution} change={(value) => setDraft({ ...draft, institution: value })} required placeholder="Ej. Banco del Estado" description="Escribe el nombre con el que aparecerá en el directorio." />
               <label className="block">
@@ -202,7 +202,7 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
             </label>
             <Field label="Descripción (opcional)" value={draft.description} change={(value) => setDraft({ ...draft, description: value })} placeholder="Describe la oportunidad, requisitos y lo que hace especial a la empresa." description="Puedes completar este campo después; una descripción ayuda a los estudiantes a decidir." textarea />
           </div>
-          <div className="space-y-6">
+          <div className="min-w-0 space-y-6">
             <div className="rounded-[22px] border border-slate-200 bg-white p-6">
               <p className="text-sm font-semibold text-slate-800">¿A qué carrera va dirigida?</p>
               <p className="mt-1 text-sm text-slate-500">Selecciona una o varias carreras según el perfil que necesita esta empresa.</p>
@@ -230,9 +230,9 @@ function Manage({ offers, setOffers, refreshOffers }: ManageProps) {
                 <ChevronDown aria-hidden="true" size={20} className="shrink-0 transition-transform duration-200 group-open:rotate-180" />
               </summary>
               <p className="mt-4 text-xs leading-5 text-slate-600">Estos datos no se muestran a estudiantes ni forman parte del directorio público.</p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="mt-4 grid gap-4 2xl:grid-cols-2">
                 <DateField label="Fecha de firma del convenio" value={draft.agreementSignedAt || ''} onChange={(value) => setDraft({ ...draft, agreementSignedAt: value })} description="Déjalo vacío si aún no existe convenio." />
-                <DateField label="Vigente hasta" value={draft.agreementValidUntil || ''} onChange={(value) => setDraft({ ...draft, agreementValidUntil: value })} minDate={draft.agreementSignedAt} description="Fecha de término o renovación del convenio." />
+                <DateField label="Vigente hasta" value={draft.agreementValidUntil || ''} onChange={(value) => setDraft({ ...draft, agreementValidUntil: value, expiresAt: value || draft.expiresAt })} minDate={draft.agreementSignedAt} description="Esta fecha también se mostrará como vigencia de la oferta." />
               </div>
               <div className="mt-4"><Field label="Números de referencia" value={draft.referenceNumbers || ''} change={(value) => setDraft({ ...draft, referenceNumbers: value })} placeholder="Ej. Convenio N.º 014/2026 · Ref. RRHH-32" description="Registra códigos, números de expediente o referencias internas." textarea /></div>
             </details>
