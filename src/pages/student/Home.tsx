@@ -309,7 +309,7 @@ function Home({ offers }: HomeProps) {
           </div>
 
           <aside className="min-w-0">
-            <div className="relative isolate overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0a347c] via-[#1457b8] to-[#2967CD] p-6 text-white shadow-2xl sm:p-8 lg:sticky lg:top-28">
+            <div className="relative isolate overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0a347c] via-[#1457b8] to-[#2967CD] p-6 text-white shadow-2xl sm:p-8">
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-25 [background-image:radial-gradient(rgba(255,255,255,0.55)_1px,transparent_1px)] [background-size:16px_16px]" />
               <img src={logoUPDS} alt="" aria-hidden="true" className="pointer-events-none absolute bottom-3 right-3 z-0 h-28 w-auto max-w-[7rem] object-contain opacity-30 sm:h-36 sm:max-w-[9rem] sm:opacity-50" />
               <div className="relative z-10">

@@ -12,6 +12,7 @@ interface CompanyCardProps {
 function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
   const isFull = offer.filled >= offer.vacancies
   const logoSrc = offer.logo?.startsWith('http') ? offer.logo : imagenEmpresaPredeterminada
+  const hasMapUrl = Boolean(offer.mapUrl?.trim())
   const mapHref = (() => {
     const raw = offer.mapUrl?.trim()
     if (!raw) return `https://www.google.com/maps?q=${encodeURIComponent(offer.address)}`
@@ -117,19 +118,19 @@ function CompanyCard({ offer, isExpanded, onToggle }: CompanyCardProps) {
                 <div className="rounded-[20px] border border-slate-200 bg-white p-4">
                   <p className="text-sm font-semibold text-[#003366]">Ubicación de la empresa</p>
                   <p className="mt-2 text-sm leading-7 text-slate-600">{offer.address}</p>
-                  <div className="mt-3 rounded-[20px] border border-[#b9d8f4] bg-gradient-to-br from-[#e8f4ff] via-white to-[#dbeeff] p-5 text-center">
-                    <MapPin className="mx-auto text-[#2967CD]" size={28} />
-                    <p className="mt-2 font-semibold text-[#003366]">Ubicación disponible en Google Maps</p>
-                    <p className="mt-1 text-sm text-slate-600">Consulta la dirección completa y planifica tu visita desde el mapa.</p>
+                  <div className={`mt-3 rounded-[20px] border p-5 text-center ${hasMapUrl ? 'border-[#b9d8f4] bg-gradient-to-br from-[#e8f4ff] via-white to-[#dbeeff]' : 'border-amber-200 bg-gradient-to-br from-amber-50 via-white to-orange-50'}`}>
+                    <MapPin className={`mx-auto ${hasMapUrl ? 'text-[#2967CD]' : 'text-amber-500'}`} size={28} />
+                    <p className="mt-2 font-semibold text-[#003366]">{hasMapUrl ? 'Ubicación disponible en Google Maps' : 'Ubicación sin enlace de Google Maps'}</p>
+                    <p className="mt-1 text-sm text-slate-600">{hasMapUrl ? 'Consulta la dirección completa y planifica tu visita desde el mapa.' : 'Esta empresa aún no proporcionó un enlace de ubicación. Usa la dirección registrada para comunicarte o visitarla.'}</p>
                   </div>
-                  <a
+                  {hasMapUrl && <a
                     href={mapHref}
                     target="_blank"
                     rel="noreferrer"
                     className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-gradient-to-r from-[#003366] to-[#2967CD] px-5 py-3 text-sm font-bold text-white shadow-[0_12px_24px_-14px_rgba(0,51,102,0.9)] transition hover:-translate-y-0.5 hover:shadow-lg"
                   >
                     Ver en Google Maps
-                  </a>
+                  </a>}
                 </div>
               </div>
             </motion.div>
