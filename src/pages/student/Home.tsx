@@ -162,8 +162,8 @@ function Home({ offers }: HomeProps) {
 
               <div className="mt-8 grid gap-4 md:grid-cols-2">
                 {[
-                  { title: 'Solicitudes activas', text: 'Empresas que solicitan estudiantes para Prácticas Profesionales.', accent: 'from-sky-400 to-cyan-400', icon: Building2, badge: 'Activa', targetId: 'solicitudes-activas' },
-                  { title: 'Empresas con convenio', text: 'Presenta tu carta de compromiso y la institución evaluará tu postulación.', accent: 'from-emerald-400 to-lime-400', icon: AlertCircle, badge: 'Convenio', targetId: 'empresas-convenio' }
+                  { title: 'Solicitudes activas', text: 'Empresas que solicitan estudiantes para Prácticas Profesionales.', accent: 'from-sky-400 to-cyan-400', icon: Building2, badge: 'Activa', targetId: 'oportunidades-disponibles' },
+                  { title: 'Empresas con convenio', text: 'Presenta tu carta de compromiso y la institución evaluará tu postulación.', accent: 'from-emerald-400 to-lime-400', icon: AlertCircle, badge: 'Convenio', targetId: 'oportunidades-disponibles' }
                 ].map((item, index) => {
                   const Icon = item.icon
                   return (
@@ -267,18 +267,18 @@ function Home({ offers }: HomeProps) {
               </section>
             )}
 
-            <section id="solicitudes-activas" className="scroll-mt-28">
+            <section id="oportunidades-disponibles" className="scroll-mt-28">
               <div className="mb-8 flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-cyan-400 text-white shadow-md">
                   <Building2 size={20} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-extrabold tracking-tight text-white">Solicitudes activas</h3>
+                  <h3 className="text-2xl font-extrabold tracking-tight text-white">Oportunidades disponibles</h3>
                   <p className="text-sm text-blue-100">Procesos activos con selección vigente.</p>
                 </div>
               </div>
-              <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
-                {directas.map((o: CompanyOffer) => (
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(17rem,1fr))] gap-4">
+                {[...directas, ...convenios].map((o: CompanyOffer) => (
                   <div key={o.id} className="min-w-0">
                     <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
                   </div>
@@ -286,7 +286,7 @@ function Home({ offers }: HomeProps) {
               </div>
             </section>
 
-            {convenios.length > 0 && (
+            {false && convenios.length > 0 && (
               <section id="empresas-convenio" className="scroll-mt-28 rounded-[24px] border border-slate-200 bg-slate-50/70 p-6 sm:p-8">
                 <div className="mb-8 flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-lime-400 text-white shadow-md">
@@ -297,7 +297,7 @@ function Home({ offers }: HomeProps) {
                     <p className="text-sm text-slate-500">Opciones con procesos más flexibles.</p>
                   </div>
                 </div>
-                <div className="grid gap-4 opacity-90 md:grid-cols-2 2xl:grid-cols-3">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(17rem,1fr))] gap-4 opacity-90">
                   {convenios.map((o: CompanyOffer) => (
                     <div key={o.id} className="min-w-0">
                       <CompanyCard offer={o} isExpanded={expandedCompanyId === o.id} onToggle={(id: string) => setExpandedCompanyId(prev => prev === id ? null : id)} />
